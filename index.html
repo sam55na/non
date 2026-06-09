@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🎡 العجلة المحظوظة الاحترافية</title>
+    <title>🎡 العجلة السوداء الذهبية</title>
     <style>
         * {
             margin: 0;
@@ -14,209 +14,243 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(circle at 30% 10%, #0a0a0a, #000000);
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', 'Cairo', 'Tahoma', sans-serif;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
         }
 
-        /* جزيئات متحركة في الخلفية */
+        /* تأثير نجوم متحركة */
         body::before {
             content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
-            animation: floatParticles 20s ease-in-out infinite;
+            background-image: radial-gradient(2px 2px at 20px 30px, #ffd700, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 60px 90px, #ffd700, rgba(0,0,0,0));
+            background-size: 200px 200px, 150px 150px;
+            background-repeat: repeat;
+            opacity: 0.3;
+            animation: starsMove 40s linear infinite;
+            pointer-events: none;
         }
 
-        @keyframes floatParticles {
-            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
-            50% { transform: translate(20px, -20px); opacity: 0.8; }
+        @keyframes starsMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100px, -100px); }
         }
 
+        /* الحاوية الرئيسية - أصغر حجماً */
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 60px;
-            padding: 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.5);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+            border-radius: 50px;
+            padding: 20px 25px 25px 25px;
+            box-shadow: 0 0 30px rgba(255,215,0,0.3), 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+            max-width: 650px;
+            width: 100%;
             transition: all 0.3s ease;
         }
 
-        /* العجلة */
+        /* الإطار الخارجي المضيء */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #ffd700, #ffb347, #ffd700, #ff8c00);
+            border-radius: 53px;
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+            animation: borderPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0.5; filter: blur(12px); }
+            50% { opacity: 1; filter: blur(20px); }
+        }
+
+        /* العجلة - أصغر حجماً */
         .wheel-wrapper {
             position: relative;
-            margin: 20px auto;
+            margin: 10px auto;
             display: flex;
             justify-content: center;
         }
 
         canvas {
+            width: 100%;
+            height: auto;
+            max-width: 450px;
+            min-width: 280px;
             border-radius: 50%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 8px rgba(255,215,0,0.6), 0 0 0 12px rgba(255,215,0,0.3);
-            transition: box-shadow 0.3s;
+            box-shadow: 0 0 0 4px #1a1a2e, 0 0 0 8px #ffd700, 0 20px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s;
             cursor: pointer;
         }
 
         canvas:hover {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 0 8px rgba(255,215,0,0.8), 0 0 0 12px rgba(255,215,0,0.5);
+            transform: scale(1.02);
+            box-shadow: 0 0 0 4px #1a1a2e, 0 0 0 12px #ffd700, 0 25px 50px rgba(0,0,0,0.6);
         }
 
-        /* المؤشر الثابت */
+        /* المؤشر الذهبي */
         .pointer {
             position: absolute;
-            top: -30px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-top: 60px solid gold;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 50px solid #ffd700;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
             z-index: 10;
         }
 
         .pointer::before {
-            content: '▼';
+            content: '⚜️';
             position: absolute;
-            top: -68px;
+            top: -58px;
             left: -12px;
-            font-size: 30px;
-            color: #ffd700;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-size: 28px;
+            text-shadow: 0 0 5px gold;
         }
 
-        /* لوحة التحكم */
+        /* أزرار ذهبية أنيقة */
         .controls {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .spin-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            color: white;
-            font-size: 28px;
+            background: linear-gradient(135deg, #1f1f2f, #0a0a0f);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            font-size: 20px;
             font-weight: bold;
-            padding: 15px 50px;
-            border-radius: 60px;
+            padding: 10px 30px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             font-family: inherit;
-            margin: 10px;
+            backdrop-filter: blur(5px);
+            letter-spacing: 1px;
         }
 
         .spin-btn:hover {
+            background: #ffd700;
+            color: #000;
+            box-shadow: 0 0 20px #ffd700;
             transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-
-        .spin-btn:active {
-            transform: scale(0.95);
         }
 
         .reset-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #ffb347;
+            color: #ffb347;
         }
 
-        /* النتيجة */
+        /* النتيجة - نصوص ذهبية تومض */
         .result {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 50px;
-            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 15px;
+            border-radius: 60px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: glow 2s ease-in-out infinite;
+            text-shadow: 0 0 5px #ffd700, 0 0 10px #ff8c00;
+            animation: goldGlow 1.5s ease-in-out infinite;
+            word-break: break-word;
         }
 
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-            50% { box-shadow: 0 10px 40px rgba(102,126,234,0.6); }
+        @keyframes goldGlow {
+            0%, 100% { text-shadow: 0 0 5px #ffd700, 0 0 10px #ff8c00; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+            50% { text-shadow: 0 0 15px #ffd700, 0 0 25px #ffa500; box-shadow: 0 0 20px rgba(255,215,0,0.6); }
         }
 
-        .result span {
-            display: inline-block;
-            animation: bounce 0.5s ease;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* إحصائيات */
+        /* الإحصائيات بلون أسود ذهبي */
         .stats {
             display: flex;
             justify-content: space-between;
-            gap: 15px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            padding: 15px;
-            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid #ffd700;
+            padding: 12px;
+            border-radius: 25px;
             text-align: center;
             flex: 1;
-            min-width: 100px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            min-width: 90px;
+            transition: all 0.3s;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            border-color: #ffb347;
+            box-shadow: 0 0 15px rgba(255,215,0,0.4);
+            transform: translateY(-3px);
         }
 
         .stat-label {
-            font-size: 14px;
-            color: #666;
+            font-size: 12px;
+            color: #ffd700;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            color: #333;
+            color: #fff;
             margin-top: 5px;
+            text-shadow: 0 0 3px gold;
         }
 
-        /* لوحة التعديل */
+        /* لوحة التعديل - بنفس التصميم الأسود الذهبي */
         .editor-panel {
-            margin-top: 25px;
-            background: #f8f9fa;
-            padding: 20px;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #ffd700;
             border-radius: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 15px;
         }
 
         .editor-title {
             font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 18px;
+            margin-bottom: 12px;
+            color: #ffd700;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-shadow: 0 0 3px gold;
         }
 
         .editor-content {
             display: none;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -225,63 +259,75 @@
         }
 
         .prize-item {
-            background: white;
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ffd700;
+            padding: 8px;
             border-radius: 20px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
 
         .prize-item input {
             flex: 1;
-            padding: 8px;
-            border: 2px solid #ddd;
-            border-radius: 15px;
+            padding: 6px;
+            background: #111;
+            border: 1px solid #ffd700;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 13px;
+            color: #ffd700;
         }
 
         .prize-item .color-input {
-            width: 40px;
-            height: 40px;
-            border: none;
+            width: 35px;
+            height: 35px;
+            border: 1px solid gold;
             border-radius: 10px;
             cursor: pointer;
         }
 
         .add-prize {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            background: #1a1a2e;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 18px;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .add-prize:hover {
+            background: #ffd700;
+            color: #000;
         }
 
         .image-upload {
-            margin-top: 15px;
+            margin-top: 12px;
             text-align: center;
         }
 
         .image-upload label {
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
+            background: #1a1a2e;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 18px;
             border-radius: 25px;
             cursor: pointer;
             display: inline-block;
+            font-size: 14px;
         }
 
-        @media (max-width: 768px) {
-            .container { padding: 20px; }
-            .stat-value { font-size: 20px; }
-            .result { font-size: 18px; }
-            .spin-btn { font-size: 22px; padding: 12px 30px; }
+        @media (max-width: 550px) {
+            .container { padding: 15px; }
+            .stat-value { font-size: 18px; }
+            .result { font-size: 16px; padding: 12px; }
+            .spin-btn { font-size: 16px; padding: 8px 20px; }
+            .pointer { top: -20px; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 40px solid #ffd700; }
+            .pointer::before { top: -48px; font-size: 22px; }
         }
     </style>
 </head>
@@ -289,339 +335,213 @@
 <div class="container">
     <div class="wheel-wrapper">
         <div class="pointer"></div>
-        <canvas id="wheelCanvas" width="500" height="500"></canvas>
+        <canvas id="wheelCanvas" width="500" height="500" style="width:100%; height:auto; max-width:450px; aspect-ratio:1/1"></canvas>
     </div>
 
     <div class="controls">
-        <button class="spin-btn" onclick="spinWheel()">🎡 ابدأ الدوران 🎡</button>
-        <button class="spin-btn reset-btn" onclick="resetStats()">🔄 إعادة تعيين الإحصائيات</button>
+        <button class="spin-btn" onclick="spinWheel()">🎡 دَوِّر العجلة 🎡</button>
+        <button class="spin-btn reset-btn" onclick="resetStats()">⟳ إعادة تعيين</button>
     </div>
 
     <div class="result" id="resultDisplay">
-        اضغط على العجلة أو الزر لبدء الحظ!
+        ✨ اضغط على العجلة أو الزر لبدء الحظ ✨
     </div>
 
     <div class="stats">
-        <div class="stat-card">
-            <div class="stat-label">🎯 عدد المرات</div>
-            <div class="stat-value" id="spinCount">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">🏆 آخر جائزة</div>
-            <div class="stat-value" id="lastPrize">-</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">⭐ أفضل جائزة</div>
-            <div class="stat-value" id="bestPrize">-</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">🎯 عدد المرات</div><div class="stat-value" id="spinCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">🏆 آخر جائزة</div><div class="stat-value" id="lastPrize">-</div></div>
+        <div class="stat-card"><div class="stat-label">⭐ أفضل جائزة</div><div class="stat-value" id="bestPrize">-</div></div>
     </div>
 
     <div class="editor-panel">
-        <div class="editor-title" onclick="toggleEditor()">
-            🎨 تعديل الجوائز والألوان
-            <span>▼</span>
-        </div>
+        <div class="editor-title" onclick="toggleEditor()">⚙️ تخصيص الجوائز والألوان <span>▼</span></div>
         <div class="editor-content" id="editorContent">
             <div id="prizesList"></div>
-            <button class="add-prize" onclick="addPrize()">+ إضافة جائزة جديدة</button>
-            <div class="image-upload">
-                <label for="bgImage">🖼️ تحميل صورة خلفية للعجلة</label>
-                <input type="file" id="bgImage" accept="image/*" style="display:none" onchange="uploadImage(this)">
-            </div>
+            <button class="add-prize" onclick="addPrize()">+ إضافة جائزة</button>
+            <div class="image-upload"><label for="bgImage">🖼️ إضافة صورة خلفية</label><input type="file" id="bgImage" accept="image/*" style="display:none" onchange="uploadImage(this)"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // الجوائز الافتراضية (قابلة للتعديل)
+    // الجوائز الافتراضية - نصوص ذهبية
     let segments = [
-        { text: "🎁 100 نقطة", color: "#FF6B6B", value: 100 },
-        { text: "💰 50 دولار", color: "#4ECDC4", value: 50 },
-        { text: "⭐ عضوية VIP", color: "#45B7D1", value: "vip" },
-        { text: "🎫 قسيمة شراء", color: "#96CEB4", value: "coupon" },
-        { text: "🔄 حظ سعيد", color: "#FFEAA7", value: 10 },
-        { text: "🏆 جائزة كبرى", color: "#DDA0DD", value: 500 },
-        { text: "🍫 شوكولاتة", color: "#FFB347", value: "chocolate" },
-        { text: "📚 كتاب مجاني", color: "#77B5FE", value: "book" }
+        { text: "👑 500 نقطة", color: "#8B0000", value: 500 },
+        { text: "💎 1000 نقطة", color: "#2C2C2C", value: 1000 },
+        { text: "⭐ VIP ذهبي", color: "#1A1A1A", value: "vip" },
+        { text: "🎫 خصم 30%", color: "#3D3D3D", value: "coupon" },
+        { text: "🔄 فرصة إضافية", color: "#2B2B2B", value: "retry" },
+        { text: "🏆 الجائزة الكبرى", color: "#8B6914", value: 5000 },
+        { text: "🎁 هدية مفاجأة", color: "#4A4A4A", value: "gift" },
+        { text: "⚜️ ربح 200 نقطة", color: "#5C5C5C", value: 200 }
     ];
 
     let canvas = document.getElementById('wheelCanvas');
     let ctx = canvas.getContext('2d');
     let currentAngle = 0;
     let spinning = false;
-    let spinTimeout = null;
     let animationFrame = null;
     let bgImageObj = null;
 
     // إحصائيات
-    let stats = {
-        spinCount: 0,
-        lastPrize: "",
-        bestPrize: "",
-        history: []
-    };
+    let stats = { spinCount: 0, lastPrize: "", bestPrize: "", bestPrizeValue: 0, history: [] };
 
-    // تحميل البيانات من localStorage
     function loadData() {
-        const savedSegments = localStorage.getItem('wheelSegments');
+        const savedSegments = localStorage.getItem('goldWheelSegments');
         if (savedSegments) segments = JSON.parse(savedSegments);
-        
-        const savedStats = localStorage.getItem('wheelStats');
+        const savedStats = localStorage.getItem('goldWheelStats');
         if (savedStats) stats = JSON.parse(savedStats);
-        
-        const savedImage = localStorage.getItem('wheelBgImage');
-        if (savedImage) {
-            bgImageObj = new Image();
-            bgImageObj.src = savedImage;
-            bgImageObj.onload = () => drawWheel();
-        }
-        
+        const savedImage = localStorage.getItem('goldWheelBgImage');
+        if (savedImage) { bgImageObj = new Image(); bgImageObj.src = savedImage; bgImageObj.onload = () => drawWheel(); }
         updateStatsUI();
         drawWheel();
         renderPrizesList();
     }
 
-    // حفظ البيانات
     function saveData() {
-        localStorage.setItem('wheelSegments', JSON.stringify(segments));
-        localStorage.setItem('wheelStats', JSON.stringify(stats));
+        localStorage.setItem('goldWheelSegments', JSON.stringify(segments));
+        localStorage.setItem('goldWheelStats', JSON.stringify(stats));
+        if (bgImageObj && bgImageObj.src) localStorage.setItem('goldWheelBgImage', bgImageObj.src);
     }
 
-    // رسم العجلة
     function drawWheel() {
+        const size = canvas.width; // 500
+        const center = size / 2;
+        const radius = size * 0.45;
         const angleStep = (Math.PI * 2) / segments.length;
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, size, size);
         
         for (let i = 0; i < segments.length; i++) {
             const startAngle = currentAngle + i * angleStep;
             const endAngle = startAngle + angleStep;
-            
-            // رسم القطعة
             ctx.beginPath();
-            ctx.arc(250, 250, 230, startAngle, endAngle);
-            ctx.lineTo(250, 250);
+            ctx.arc(center, center, radius, startAngle, endAngle);
+            ctx.lineTo(center, center);
             ctx.fillStyle = segments[i].color;
             ctx.fill();
-            ctx.strokeStyle = "white";
-            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#FFD700";
+            ctx.lineWidth = 2.5;
             ctx.stroke();
             
-            // رسم النص
             ctx.save();
-            ctx.translate(250, 250);
+            ctx.translate(center, center);
             ctx.rotate(startAngle + angleStep / 2);
             ctx.textAlign = "center";
-            ctx.fillStyle = "white";
-            ctx.font = "bold 16px 'Segoe UI', 'Cairo'";
-            ctx.shadowBlur = 5;
+            ctx.fillStyle = "#FFD700";
+            ctx.font = `bold ${Math.max(12, size * 0.035)}px 'Segoe UI', 'Cairo'`;
+            ctx.shadowBlur = 4;
             ctx.shadowColor = "black";
-            ctx.fillText(segments[i].text, 160, 10);
+            ctx.fillText(segments[i].text, radius * 0.65, 8);
             ctx.restore();
         }
         
-        // رسم الدائرة الداخلية
+        // مركز ذهبي
         ctx.beginPath();
-        ctx.arc(250, 250, 60, 0, Math.PI * 2);
+        ctx.arc(center, center, size * 0.12, 0, Math.PI * 2);
         ctx.fillStyle = "#FFD700";
         ctx.fill();
-        ctx.strokeStyle = "#FFF";
-        ctx.lineWidth = 4;
-        ctx.stroke();
-        
-        ctx.fillStyle = "#333";
-        ctx.font = "bold 24px 'Segoe UI'";
+        ctx.fillStyle = "#000";
+        ctx.font = `bold ${size * 0.06}px 'Segoe UI'`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("🎡", 250, 250);
+        ctx.fillText("🎲", center, center);
         
-        // إضافة الصورة إذا وجدت
         if (bgImageObj && bgImageObj.complete) {
-            ctx.globalAlpha = 0.3;
-            ctx.drawImage(bgImageObj, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 0.2;
+            ctx.drawImage(bgImageObj, 0, 0, size, size);
             ctx.globalAlpha = 1;
         }
     }
-    
-    // الدوران
+
     function spinWheel() {
         if (spinning) return;
-        
         spinning = true;
-        const spinDuration = 3000;
+        const duration = 2800;
         const startTime = Date.now();
         const startAngle = currentAngle;
-        const totalRotations = Math.random() * 10 + 15;
-        const targetRotation = totalRotations * Math.PI * 2;
+        const rotations = Math.random() * 8 + 12;
+        const targetRotation = rotations * Math.PI * 2;
         
         function animate() {
             const elapsed = Date.now() - startTime;
-            const progress = Math.min(1, elapsed / spinDuration);
-            const easeOut = 1 - Math.pow(1 - progress, 3);
-            
-            currentAngle = startAngle + targetRotation * easeOut;
+            const progress = Math.min(1, elapsed / duration);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            currentAngle = startAngle + targetRotation * ease;
             drawWheel();
-            
-            if (progress < 1) {
-                animationFrame = requestAnimationFrame(animate);
-            } else {
-                cancelAnimationFrame(animationFrame);
-                finishSpin();
-            }
+            if (progress < 1) animationFrame = requestAnimationFrame(animate);
+            else finishSpin();
         }
-        
         animate();
     }
-    
+
     function finishSpin() {
         spinning = false;
-        
         const angleStep = (Math.PI * 2) / segments.length;
-        const normalizedAngle = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-        const pointerAngle = (Math.PI * 3 / 2);
+        let rawAngle = currentAngle % (Math.PI * 2);
+        if (rawAngle < 0) rawAngle += Math.PI * 2;
+        const pointerRad = Math.PI * 3 / 2;
+        let diff = (pointerRad - rawAngle + Math.PI * 2) % (Math.PI * 2);
+        let idx = Math.floor(diff / angleStep) % segments.length;
+        const prize = segments[idx];
         
-        let angleDiff = (pointerAngle - normalizedAngle + Math.PI * 2) % (Math.PI * 2);
-        let segmentIndex = Math.floor(angleDiff / angleStep);
-        segmentIndex = (segmentIndex + segments.length) % segments.length;
-        
-        const prize = segments[segmentIndex];
-        
-        // تحديث الإحصائيات
         stats.spinCount++;
         stats.lastPrize = prize.text;
-        
-        if (!stats.bestPrize || (typeof prize.value === 'number' && prize.value > 0 && 
-            (!stats.bestPrizeValue || prize.value > stats.bestPrizeValue))) {
-            stats.bestPrize = prize.text;
-            stats.bestPrizeValue = prize.value;
-        }
-        
-        stats.history.unshift({
-            prize: prize.text,
-            time: new Date().toLocaleTimeString()
-        });
-        if (stats.history.length > 10) stats.history.pop();
+        let prizeNum = typeof prize.value === 'number' ? prize.value : 0;
+        if (prizeNum > stats.bestPrizeValue) { stats.bestPrize = prize.text; stats.bestPrizeValue = prizeNum; }
         
         saveData();
         updateStatsUI();
-        
-        // عرض النتيجة بتأثير
         const resultDiv = document.getElementById('resultDisplay');
-        resultDiv.innerHTML = `<span>🎉🎊 ${prize.text} 🎊🎉</span>`;
+        resultDiv.innerHTML = `✨🎉 ${prize.text} 🎉✨`;
         resultDiv.style.animation = 'none';
-        setTimeout(() => resultDiv.style.animation = 'glow 2s ease-in-out infinite', 10);
-        
-        // تأثير اهتزاز
-        canvas.style.transform = 'scale(1.05)';
-        setTimeout(() => canvas.style.transform = '', 300);
-        
-        // نغمة (اختيارية - تصدر صوتاً بسيطاً)
-        playClickSound();
+        setTimeout(() => resultDiv.style.animation = 'goldGlow 1.5s ease-in-out infinite', 10);
+        canvas.style.transform = 'scale(1.02)';
+        setTimeout(() => canvas.style.transform = '', 200);
+        playSound();
     }
-    
-    function playClickSound() {
-        // تأثير صوتي بسيط باستخدام Web Audio API
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.frequency.value = 880;
-            gainNode.gain.value = 0.1;
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-            oscillator.stop(audioCtx.currentTime + 0.5);
-        } catch(e) { /* لا مشكلة */ }
+
+    function playSound() {
+        try { new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgbmVlZGVk').play(); } catch(e) {}
     }
-    
+
     function updateStatsUI() {
         document.getElementById('spinCount').innerText = stats.spinCount;
         document.getElementById('lastPrize').innerText = stats.lastPrize || "-";
         document.getElementById('bestPrize').innerText = stats.bestPrize || "-";
     }
-    
+
     function resetStats() {
-        if (confirm('هل تريد إعادة تعيين جميع الإحصائيات؟')) {
-            stats = {
-                spinCount: 0,
-                lastPrize: "",
-                bestPrize: "",
-                history: []
-            };
+        if (confirm('إعادة تعيين جميع الإحصائيات؟')) {
+            stats = { spinCount: 0, lastPrize: "", bestPrize: "", bestPrizeValue: 0, history: [] };
             saveData();
             updateStatsUI();
-            document.getElementById('resultDisplay').innerHTML = "تم إعادة تعيين الإحصائيات ✨";
+            document.getElementById('resultDisplay').innerHTML = "✨ تم إعادة التعيين ✨";
         }
     }
-    
-    function toggleEditor() {
-        const editor = document.getElementById('editorContent');
-        editor.classList.toggle('active');
-    }
-    
+
+    function toggleEditor() { document.getElementById('editorContent').classList.toggle('active'); }
     function renderPrizesList() {
         const container = document.getElementById('prizesList');
         container.innerHTML = '';
-        segments.forEach((segment, index) => {
-            const div = document.createElement('div');
+        segments.forEach((seg, i) => {
+            let div = document.createElement('div');
             div.className = 'prize-item';
-            div.innerHTML = `
-                <input type="text" value="${segment.text}" onchange="updatePrize(${index}, 'text', this.value)">
-                <input type="color" class="color-input" value="${segment.color}" onchange="updatePrize(${index}, 'color', this.value)">
-                <button onclick="removePrize(${index})" style="background:#ff4757; color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">✖</button>
-            `;
+            div.innerHTML = `<input type="text" value="${seg.text}" onchange="updatePrize(${i},'text',this.value)"><input type="color" class="color-input" value="${seg.color}" onchange="updatePrize(${i},'color',this.value)"><button onclick="removePrize(${i})" style="background:#8B0000; border:none; color:gold; border-radius:50%; width:28px; cursor:pointer;">✖</button>`;
             container.appendChild(div);
         });
     }
-    
-    function updatePrize(index, prop, value) {
-        segments[index][prop] = value;
-        saveData();
-        drawWheel();
-        renderPrizesList();
-    }
-    
-    function addPrize() {
-        segments.push({ text: "جائزة جديدة", color: "#" + Math.floor(Math.random()*16777215).toString(16), value: "new" });
-        saveData();
-        drawWheel();
-        renderPrizesList();
-    }
-    
-    function removePrize(index) {
-        if (segments.length <= 2) {
-            alert("يجب أن يكون هناك جائزتان على الأقل!");
-            return;
-        }
-        segments.splice(index, 1);
-        saveData();
-        drawWheel();
-        renderPrizesList();
-    }
-    
+    function updatePrize(i, prop, val) { segments[i][prop] = val; saveData(); drawWheel(); renderPrizesList(); }
+    function addPrize() { segments.push({ text: "جائزة جديدة", color: "#333333", value: 10 }); saveData(); drawWheel(); renderPrizesList(); }
+    function removePrize(i) { if (segments.length > 2) { segments.splice(i,1); saveData(); drawWheel(); renderPrizesList(); } else alert("يلزم وجود جائزتين على الأقل"); }
     function uploadImage(input) {
-        const file = input.files[0];
+        let file = input.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                bgImageObj = new Image();
-                bgImageObj.onload = () => {
-                    localStorage.setItem('wheelBgImage', e.target.result);
-                    drawWheel();
-                };
-                bgImageObj.src = e.target.result;
-            };
+            let reader = new FileReader();
+            reader.onload = e => { bgImageObj = new Image(); bgImageObj.onload = () => { drawWheel(); saveData(); }; bgImageObj.src = e.target.result; };
             reader.readAsDataURL(file);
         }
     }
-    
-    // دوران بالضغط على canvas
-    canvas.addEventListener('click', (e) => {
-        if (!spinning) spinWheel();
-    });
-    
-    // تحميل أولي
+    canvas.addEventListener('click', () => { if (!spinning) spinWheel(); });
     loadData();
 </script>
 </body>
