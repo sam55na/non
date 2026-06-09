@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🎡 العجلة المحظوظة الاحترافية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Cairo', 'Tahoma', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* جزيئات متحركة في الخلفية */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: floatParticles 20s ease-in-out infinite;
+        }
+
+        @keyframes floatParticles {
+            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(20px, -20px); opacity: 0.8; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 60px;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        /* العجلة */
+        .wheel-wrapper {
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        canvas {
+            border-radius: 50%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 8px rgba(255,215,0,0.6), 0 0 0 12px rgba(255,215,0,0.3);
+            transition: box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        canvas:hover {
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 0 8px rgba(255,215,0,0.8), 0 0 0 12px rgba(255,215,0,0.5);
+        }
+
+        /* المؤشر الثابت */
+        .pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 60px solid gold;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            z-index: 10;
+        }
+
+        .pointer::before {
+            content: '▼';
+            position: absolute;
+            top: -68px;
+            left: -12px;
+            font-size: 30px;
+            color: #ffd700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* لوحة التحكم */
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .spin-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 15px 50px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            font-family: inherit;
+            margin: 10px;
+        }
+
+        .spin-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .spin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* النتيجة */
+        .result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 50px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 10px 40px rgba(102,126,234,0.6); }
+        }
+
+        .result span {
+            display: inline-block;
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* إحصائيات */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px;
+            border-radius: 30px;
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* لوحة التعديل */
+        .editor-panel {
+            margin-top: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .editor-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-content {
+            display: none;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .editor-content.active {
+            display: flex;
+        }
+
+        .prize-item {
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .prize-item input {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .prize-item .color-input {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .add-prize {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .image-upload {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-upload label {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .stat-value { font-size: 20px; }
+            .result { font-size: 18px; }
+            .spin-btn { font-size: 22px; padding: 12px 30px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    </div>
+
+    <div class="controls">
+        <button class="spin-btn" onclick="spinWheel()">🎡 ابدأ الدوران 🎡</button>
+        <button class="spin-btn reset-btn" onclick="resetStats()">🔄 إعادة تعيين الإحصائيات</button>
+    </div>
+
+    <div class="result" id="resultDisplay">
+        اضغط على العجلة أو الزر لبدء الحظ!
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-label">🎯 عدد المرات</div>
+            <div class="stat-value" id="spinCount">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">🏆 آخر جائزة</div>
+            <div class="stat-value" id="lastPrize">-</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">⭐ أفضل جائزة</div>
+            <div class="stat-value" id="bestPrize">-</div>
+        </div>
+    </div>
+
+    <div class="editor-panel">
+        <div class="editor-title" onclick="toggleEditor()">
+            🎨 تعديل الجوائز والألوان
+            <span>▼</span>
+        </div>
+        <div class="editor-content" id="editorContent">
+            <div id="prizesList"></div>
+            <button class="add-prize" onclick="addPrize()">+ إضافة جائزة جديدة</button>
+            <div class="image-upload">
+                <label for="bgImage">🖼️ تحميل صورة خلفية للعجلة</label>
+                <input type="file" id="bgImage" accept="image/*" style="display:none" onchange="uploadImage(this)">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // الجوائز الافتراضية (قابلة للتعديل)
+    let segments = [
+        { text: "🎁 100 نقطة", color: "#FF6B6B", value: 100 },
+        { text: "💰 50 دولار", color: "#4ECDC4", value: 50 },
+        { text: "⭐ عضوية VIP", color: "#45B7D1", value: "vip" },
+        { text: "🎫 قسيمة شراء", color: "#96CEB4", value: "coupon" },
+        { text: "🔄 حظ سعيد", color: "#FFEAA7", value: 10 },
+        { text: "🏆 جائزة كبرى", color: "#DDA0DD", value: 500 },
+        { text: "🍫 شوكولاتة", color: "#FFB347", value: "chocolate" },
+        { text: "📚 كتاب مجاني", color: "#77B5FE", value: "book" }
+    ];
+
+    let canvas = document.getElementById('wheelCanvas');
+    let ctx = canvas.getContext('2d');
+    let currentAngle = 0;
+    let spinning = false;
+    let spinTimeout = null;
+    let animationFrame = null;
+    let bgImageObj = null;
+
+    // إحصائيات
+    let stats = {
+        spinCount: 0,
+        lastPrize: "",
+        bestPrize: "",
+        history: []
+    };
+
+    // تحميل البيانات من localStorage
+    function loadData() {
+        const savedSegments = localStorage.getItem('wheelSegments');
+        if (savedSegments) segments = JSON.parse(savedSegments);
+        
+        const savedStats = localStorage.getItem('wheelStats');
+        if (savedStats) stats = JSON.parse(savedStats);
+        
+        const savedImage = localStorage.getItem('wheelBgImage');
+        if (savedImage) {
+            bgImageObj = new Image();
+            bgImageObj.src = savedImage;
+            bgImageObj.onload = () => drawWheel();
+        }
+        
+        updateStatsUI();
+        drawWheel();
+        renderPrizesList();
+    }
+
+    // حفظ البيانات
+    function saveData() {
+        localStorage.setItem('wheelSegments', JSON.stringify(segments));
+        localStorage.setItem('wheelStats', JSON.stringify(stats));
+    }
+
+    // رسم العجلة
+    function drawWheel() {
+        const angleStep = (Math.PI * 2) / segments.length;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < segments.length; i++) {
+            const startAngle = currentAngle + i * angleStep;
+            const endAngle = startAngle + angleStep;
+            
+            // رسم القطعة
+            ctx.beginPath();
+            ctx.arc(250, 250, 230, startAngle, endAngle);
+            ctx.lineTo(250, 250);
+            ctx.fillStyle = segments[i].color;
+            ctx.fill();
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // رسم النص
+            ctx.save();
+            ctx.translate(250, 250);
+            ctx.rotate(startAngle + angleStep / 2);
+            ctx.textAlign = "center";
+            ctx.fillStyle = "white";
+            ctx.font = "bold 16px 'Segoe UI', 'Cairo'";
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = "black";
+            ctx.fillText(segments[i].text, 160, 10);
+            ctx.restore();
+        }
+        
+        // رسم الدائرة الداخلية
+        ctx.beginPath();
+        ctx.arc(250, 250, 60, 0, Math.PI * 2);
+        ctx.fillStyle = "#FFD700";
+        ctx.fill();
+        ctx.strokeStyle = "#FFF";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        
+        ctx.fillStyle = "#333";
+        ctx.font = "bold 24px 'Segoe UI'";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🎡", 250, 250);
+        
+        // إضافة الصورة إذا وجدت
+        if (bgImageObj && bgImageObj.complete) {
+            ctx.globalAlpha = 0.3;
+            ctx.drawImage(bgImageObj, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+        }
+    }
+    
+    // الدوران
+    function spinWheel() {
+        if (spinning) return;
+        
+        spinning = true;
+        const spinDuration = 3000;
+        const startTime = Date.now();
+        const startAngle = currentAngle;
+        const totalRotations = Math.random() * 10 + 15;
+        const targetRotation = totalRotations * Math.PI * 2;
+        
+        function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(1, elapsed / spinDuration);
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            
+            currentAngle = startAngle + targetRotation * easeOut;
+            drawWheel();
+            
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(animate);
+            } else {
+                cancelAnimationFrame(animationFrame);
+                finishSpin();
+            }
+        }
+        
+        animate();
+    }
+    
+    function finishSpin() {
+        spinning = false;
+        
+        const angleStep = (Math.PI * 2) / segments.length;
+        const normalizedAngle = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+        const pointerAngle = (Math.PI * 3 / 2);
+        
+        let angleDiff = (pointerAngle - normalizedAngle + Math.PI * 2) % (Math.PI * 2);
+        let segmentIndex = Math.floor(angleDiff / angleStep);
+        segmentIndex = (segmentIndex + segments.length) % segments.length;
+        
+        const prize = segments[segmentIndex];
+        
+        // تحديث الإحصائيات
+        stats.spinCount++;
+        stats.lastPrize = prize.text;
+        
+        if (!stats.bestPrize || (typeof prize.value === 'number' && prize.value > 0 && 
+            (!stats.bestPrizeValue || prize.value > stats.bestPrizeValue))) {
+            stats.bestPrize = prize.text;
+            stats.bestPrizeValue = prize.value;
+        }
+        
+        stats.history.unshift({
+            prize: prize.text,
+            time: new Date().toLocaleTimeString()
+        });
+        if (stats.history.length > 10) stats.history.pop();
+        
+        saveData();
+        updateStatsUI();
+        
+        // عرض النتيجة بتأثير
+        const resultDiv = document.getElementById('resultDisplay');
+        resultDiv.innerHTML = `<span>🎉🎊 ${prize.text} 🎊🎉</span>`;
+        resultDiv.style.animation = 'none';
+        setTimeout(() => resultDiv.style.animation = 'glow 2s ease-in-out infinite', 10);
+        
+        // تأثير اهتزاز
+        canvas.style.transform = 'scale(1.05)';
+        setTimeout(() => canvas.style.transform = '', 300);
+        
+        // نغمة (اختيارية - تصدر صوتاً بسيطاً)
+        playClickSound();
+    }
+    
+    function playClickSound() {
+        // تأثير صوتي بسيط باستخدام Web Audio API
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 880;
+            gainNode.gain.value = 0.1;
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        } catch(e) { /* لا مشكلة */ }
+    }
+    
+    function updateStatsUI() {
+        document.getElementById('spinCount').innerText = stats.spinCount;
+        document.getElementById('lastPrize').innerText = stats.lastPrize || "-";
+        document.getElementById('bestPrize').innerText = stats.bestPrize || "-";
+    }
+    
+    function resetStats() {
+        if (confirm('هل تريد إعادة تعيين جميع الإحصائيات؟')) {
+            stats = {
+                spinCount: 0,
+                lastPrize: "",
+                bestPrize: "",
+                history: []
+            };
+            saveData();
+            updateStatsUI();
+            document.getElementById('resultDisplay').innerHTML = "تم إعادة تعيين الإحصائيات ✨";
+        }
+    }
+    
+    function toggleEditor() {
+        const editor = document.getElementById('editorContent');
+        editor.classList.toggle('active');
+    }
+    
+    function renderPrizesList() {
+        const container = document.getElementById('prizesList');
+        container.innerHTML = '';
+        segments.forEach((segment, index) => {
+            const div = document.createElement('div');
+            div.className = 'prize-item';
+            div.innerHTML = `
+                <input type="text" value="${segment.text}" onchange="updatePrize(${index}, 'text', this.value)">
+                <input type="color" class="color-input" value="${segment.color}" onchange="updatePrize(${index}, 'color', this.value)">
+                <button onclick="removePrize(${index})" style="background:#ff4757; color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">✖</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+    
+    function updatePrize(index, prop, value) {
+        segments[index][prop] = value;
+        saveData();
+        drawWheel();
+        renderPrizesList();
+    }
+    
+    function addPrize() {
+        segments.push({ text: "جائزة جديدة", color: "#" + Math.floor(Math.random()*16777215).toString(16), value: "new" });
+        saveData();
+        drawWheel();
+        renderPrizesList();
+    }
+    
+    function removePrize(index) {
+        if (segments.length <= 2) {
+            alert("يجب أن يكون هناك جائزتان على الأقل!");
+            return;
+        }
+        segments.splice(index, 1);
+        saveData();
+        drawWheel();
+        renderPrizesList();
+    }
+    
+    function uploadImage(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bgImageObj = new Image();
+                bgImageObj.onload = () => {
+                    localStorage.setItem('wheelBgImage', e.target.result);
+                    drawWheel();
+                };
+                bgImageObj.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    // دوران بالضغط على canvas
+    canvas.addEventListener('click', (e) => {
+        if (!spinning) spinWheel();
+    });
+    
+    // تحميل أولي
+    loadData();
+</script>
+</body>
+</html>
