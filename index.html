@@ -2,1083 +2,480 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>GoalHub Elite | منصة كرة القدم المتكاملة</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة كرة القدم - إدارة الطلبات والتخزين المؤقت</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Cairo', 'Inter', sans-serif;
-            background: #0A0F1E;
-            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
+            color: #f0f3fa;
+            padding: 20px;
             min-height: 100vh;
         }
-
-        /* ========== BACKGROUND EFFECTS ========== */
-        .bg-gradient {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.08) 0%, rgba(10, 15, 30, 0) 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ========== HEADER ========== */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(10, 15, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1rem 2rem;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #2563EB, #1D4ED8);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon i {
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .logo-text h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFFFFF, #94A3B8);
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ffd89b, #c7e9ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
-
-        .logo-text p {
-            font-size: 0.7rem;
-            color: #64748B;
-        }
-
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(220, 38, 38, 0.15);
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #EF4444;
-            border-radius: 50%;
-            animation: pulse 1.2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
-        .live-indicator span {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #FCA5A5;
-        }
-
-        /* ========== MAIN LAYOUT ========== */
-        .app-container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-
-        /* ========== STATS BAR ========== */
-        .stats-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-            min-width: 150px;
-            transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(37, 99, 235, 0.3);
-            background: rgba(15, 23, 42, 0.8);
-        }
-
-        .stat-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(37, 99, 235, 0.15);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-icon i {
-            font-size: 1.3rem;
-            color: #3B82F6;
-        }
-
-        .stat-info h4 {
-            font-size: 0.7rem;
-            color: #94A3B8;
-            font-weight: 500;
-        }
-
-        .stat-info .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-        /* ========== TABS ========== */
-        .tabs-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            background: rgba(15, 23, 42, 0.4);
-            padding: 0.5rem;
-            border-radius: 20px;
+        /* رصد حالة الطلبات */
+        .rate-panel {
+            background: #111827cc;
             backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            border: 1px solid #2d3e5a;
         }
-
+        .rate-info {
+            background: #00000066;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-family: monospace;
+        }
+        .queue-warning {
+            background: #a8551a;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: bold;
+        }
+        .league-selector {
+            background: rgba(20, 28, 44, 0.7);
+            border-radius: 60px;
+            padding: 8px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        select {
+            background: #1e2a3a;
+            border: 1px solid #2d3e5a;
+            padding: 12px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #2a3448;
+            margin-bottom: 30px;
+        }
         .tab-btn {
             background: transparent;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 16px;
-            font-family: 'Cairo', sans-serif;
+            padding: 12px 28px;
             font-weight: 600;
-            font-size: 0.85rem;
-            color: #94A3B8;
+            color: #a4b0cd;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tab-btn i {
-            font-size: 0.9rem;
-        }
-
-        .tab-btn.active {
-            background: #2563EB;
-            color: white;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        /* ========== SECTION ========== */
-        .section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ========== MATCHES GRID ========== */
-        .matches-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .match-card {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 1.2rem;
-            transition: all 0.2s;
-        }
-
-        .match-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(37, 99, 235, 0.4);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .match-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .tournament-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(37, 99, 235, 0.15);
-            padding: 0.25rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #60A5FA;
-        }
-
-        .match-status {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-        }
-
-        .match-status.scheduled {
-            background: rgba(37, 99, 235, 0.15);
-            color: #60A5FA;
-        }
-
-        .match-status.live {
-            background: rgba(220, 38, 38, 0.2);
-            color: #F87171;
-            animation: pulseText 1.2s infinite;
-        }
-
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-
-        .match-status.finished {
-            background: rgba(34, 197, 94, 0.1);
-            color: #4ADE80;
-        }
-
-        .teams-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.2rem 0;
-        }
-
-        .team {
-            flex: 1;
-            text-align: center;
-        }
-
-        .team-name {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            color: #F1F5F9;
-        }
-
-        .team-score {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #3B82F6;
-        }
-
-        .vs-divider {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #64748B;
-            font-size: 0.8rem;
-        }
-
-        .match-footer {
-            margin-top: 1rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            font-size: 0.7rem;
-            color: #64748B;
-        }
-
-        .match-footer i {
-            margin-left: 5px;
-            color: #3B82F6;
-        }
-
-        /* ========== STANDINGS TABLE ========== */
-        .standings-wrapper {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow-x: auto;
-        }
-
-        .standings-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        .standings-table th,
-        .standings-table td {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .standings-table th {
-            color: #94A3B8;
-            font-weight: 600;
-            font-size: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .standings-table tr:hover td {
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        .team-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        /* ========== SCORERS LIST ========== */
-        .scorers-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .scorer-item {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.2s;
-        }
-
-        .scorer-item:hover {
-            border-color: rgba(37, 99, 235, 0.3);
-            transform: translateX(-5px);
-        }
-
-        .scorer-rank {
-            width: 40px;
-            height: 40px;
-            background: rgba(37, 99, 235, 0.15);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #3B82F6;
-        }
-
-        .scorer-info {
-            flex: 1;
-        }
-
-        .scorer-name {
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-        }
-
-        .scorer-team {
-            font-size: 0.7rem;
-            color: #64748B;
-        }
-
-        .scorer-goals {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #FBBF24;
-        }
-
-        /* ========== TEAM STATS ========== */
-        .team-search {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .search-input-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1rem;
-            font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
-            color: white;
-            direction: rtl;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #3B82F6;
-        }
-
-        .search-input::placeholder {
-            color: #475569;
-        }
-
-        .search-btn {
-            background: #2563EB;
-            border: none;
-            padding: 0 2rem;
-            border-radius: 16px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .search-btn:hover {
-            background: #1D4ED8;
-            transform: scale(1.02);
-        }
-
-        .team-stats-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .stat-item {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 16px;
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #64748B;
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #3B82F6;
-        }
-
-        /* ========== LEAGUE SELECTOR ========== */
-        .league-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .league-btn {
-            background: rgba(30, 41, 59, 0.6);
-            border: none;
-            padding: 0.5rem 1.2rem;
             border-radius: 40px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 500;
-            font-size: 0.8rem;
-            color: #94A3B8;
-            cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
-
-        .league-btn.active {
-            background: #2563EB;
+        .tab-btn.active {
+            background: #2a3a60;
             color: white;
         }
-
-        .league-btn:hover:not(.active) {
-            background: #1E293B;
-            color: white;
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+        .matches-grid, .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; }
+        .match-card, .standing-row-card {
+            background: #111827d9;
+            border-radius: 28px;
+            padding: 18px;
+            border: 1px solid #2d374b;
+            transition: 0.2s;
         }
-
-        /* ========== LOADER ========== */
-        .loader {
-            text-align: center;
-            padding: 3rem;
-        }
-
-        .loader i {
-            font-size: 2rem;
-            color: #3B82F6;
-        }
-
-        /* ========== EMPTY STATE ========== */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #64748B;
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 1rem;
-            }
-            .matches-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-bar {
-                flex-direction: column;
-            }
-            .tabs-container {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-            }
-            .tab-btn {
-                white-space: nowrap;
-            }
-        }
+        .match-card:hover { border-color: #4c6a9e; }
+        .teams { display: flex; justify-content: space-between; align-items: center; gap: 15px; font-weight: bold; }
+        .score { font-size: 1.7rem; font-weight: 800; background: #00000055; padding: 5px 14px; border-radius: 50px; }
+        .match-info { display: flex; justify-content: space-between; margin-top: 15px; color: #9aa9c7; font-size: 0.8rem; border-top: 1px dashed #2c3a55; padding-top: 12px; }
+        .standing-table { width: 100%; border-collapse: collapse; }
+        .standing-table th, .standing-table td { padding: 12px 8px; text-align: center; border-bottom: 1px solid #2c3a55; }
+        .standing-table th { background: #1e2a3a; color: #ffd966; }
+        .loader { text-align: center; padding: 50px; color: #ccc; }
+        .error { background: #a1222e80; border-right: 5px solid #ff6b6b; padding: 15px; border-radius: 18px; }
+        footer { margin-top: 50px; text-align: center; font-size: 0.8rem; color: #6c7a9e; }
+        @media (max-width: 700px) { .tabs .tab-btn { padding: 8px 16px; } }
     </style>
 </head>
 <body>
-<div class="bg-gradient"></div>
-
-<div class="header">
-    <div class="header-content">
-        <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-futbol"></i>
-            </div>
-            <div class="logo-text">
-                <h1>GoalHub Elite</h1>
-                <p>منصة كرة القدم المتكاملة</p>
-            </div>
-        </div>
-        <div class="live-indicator">
-            <div class="live-dot"></div>
-            <span>بيانات حية مباشرة</span>
-        </div>
-    </div>
-</div>
-
-<div class="app-container">
-    <div class="stats-bar" id="statsBar">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-            <div class="stat-info">
-                <h4>مباريات اليوم</h4>
-                <div class="stat-value" id="totalMatches">—</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-play-circle"></i></div>
-            <div class="stat-info">
-                <h4>مباريات مباشرة</h4>
-                <div class="stat-value" id="liveMatches">—</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-trophy"></i></div>
-            <div class="stat-info">
-                <h4>بطولات نشطة</h4>
-                <div class="stat-value" id="activeLeagues">—</div>
-            </div>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>⚽ ملعب المعلومة الذكي</h1>
+        <p>نتائج، ترتيب، مباريات - مع إدارة ذكية للطلبات</p>
     </div>
 
-    <div class="tabs-container" id="tabsContainer">
-        <button class="tab-btn active" data-tab="matches"><i class="fas fa-futbol"></i> المباريات</button>
-        <button class="tab-btn" data-tab="standings"><i class="fas fa-trophy"></i> الترتيب</button>
-        <button class="tab-btn" data-tab="scorers"><i class="fas fa-chart-line"></i> الهدافون</button>
-        <button class="tab-btn" data-tab="teams"><i class="fas fa-users"></i> الفرق</button>
+    <!-- لوحة حالة الطلبات -->
+    <div class="rate-panel" id="ratePanel">
+        <span>📊 حالة الـ API:</span>
+        <span class="rate-info" id="rateStatus">🟢 جاهز</span>
+        <span>🚦 الطلبات المستخدمة في الدقيقة: <span id="requestsUsed">0</span>/10</span>
+        <span>⏳ الطلبات المنتظرة: <span id="queueLength">0</span></span>
+        <span id="cooldownMsg"></span>
     </div>
 
-    <!-- قسم المباريات -->
-    <div id="matchesSection" class="section active">
-        <div class="league-selector" id="matchesLeagueSelector"></div>
-        <div id="matchesContainer"><div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب المباريات...</div></div>
+    <div class="league-selector">
+        <label>🏆 اختر البطولة :</label>
+        <select id="leagueSelect"></select>
+        <div class="queue-warning" id="warningMsg" style="display:none;">⚠️ جاري التهيئة...</div>
     </div>
 
-    <!-- قسم الترتيب -->
-    <div id="standingsSection" class="section">
-        <div class="league-selector" id="standingsLeagueSelector"></div>
-        <div id="standingsContainer"><div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب الترتيب...</div></div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="upcoming">📅 المباريات القادمة</button>
+        <button class="tab-btn" data-tab="past">📋 النتائج السابقة</button>
+        <button class="tab-btn" data-tab="standings">🏆 جدول الترتيب</button>
+        <button class="tab-btn" data-tab="topscorers">🎯 الهدافون</button>
     </div>
 
-    <!-- قسم الهدافين -->
-    <div id="scorersSection" class="section">
-        <div class="league-selector" id="scorersLeagueSelector"></div>
-        <div id="scorersContainer"><div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب الهدافين...</div></div>
-    </div>
-
-    <!-- قسم الفرق -->
-    <div id="teamsSection" class="section">
-        <div class="team-search">
-            <div class="search-input-group">
-                <input type="text" id="teamSearchInput" class="search-input" placeholder="ابحث عن فريق... (مثال: Real Madrid, Barcelona, Liverpool)">
-                <button id="searchTeamBtn" class="search-btn"><i class="fas fa-search"></i> بحث</button>
-            </div>
-        </div>
-        <div id="teamStatsContainer"></div>
-    </div>
+    <div id="upcoming" class="tab-content active"><div id="upcomingContainer" class="matches-grid">جاري التحميل...</div></div>
+    <div id="past" class="tab-content"><div id="pastContainer" class="matches-grid">جاري التحميل...</div></div>
+    <div id="standings" class="tab-content"><div id="standingsContainer">جاري التحميل...</div></div>
+    <div id="topscorers" class="tab-content"><div id="topscorersContainer">جاري التحميل...</div></div>
+    <footer>البيانات من Football-Data.org | تخزين مؤقت لمدة دقيقة | إدارة تلقائية لحدود الطلبات</footer>
 </div>
 
 <script>
-    // ========== API Configuration ==========
-    const PROXY_URL = 'https://api.allorigins.win/raw?url=';
-    const API_BASE = 'https://sportscore.com/api/v1/football';
-    
-    let currentTab = 'matches';
-    let currentLeague = 'premier-league';
-    
-    // الدوريات المتاحة للبحث
-    const leagues = {
-        'premier-league': { name: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي', slug: 'premier-league' },
-        'laliga': { name: '🇪🇸 الليجا الإسبانية', slug: 'laliga' },
-        'serie-a': { name: '🇮🇹 الدوري الإيطالي', slug: 'serie-a' },
-        'bundesliga': { name: '🇩🇪 البوندسليجا', slug: 'bundesliga' },
-        'ligue-1': { name: '🇫🇷 الدوري الفرنسي', slug: 'ligue-1' },
-        'world-cup': { name: '🏆 كأس العالم', slug: 'world-cup' },
-        'champions-league': { name: '⭐ دوري الأبطال', slug: 'champions-league' }
-    };
-    
-    // ========== جلب البيانات من API ==========
-    async function fetchAPI(endpoint) {
+    // ======================== الإعدادات الأساسية ========================
+    const API_KEY = "3885421db9f44d1d80ac4a906541e438";
+    const BASE_URL = "https://api.football-data.org/v4";
+    const RATE_LIMIT = 10;          // طلبات في الدقيقة
+    const CACHE_TTL = 60000;        // 60 ثانية
+
+    // قائمة جميع البطولات التي يسمح بها اشتراكك (سيتم تصفيتها لاحقاً إلى النشطة فقط)
+    const ALL_COMPETITIONS = [
+        { code: "PL", name: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي" },
+        { code: "PD", name: "🇪🇸 الدوري الإسباني" },
+        { code: "SA", name: "🇮🇹 الدوري الإيطالي" },
+        { code: "BL1", name: "🇩🇪 الدوري الألماني" },
+        { code: "FL1", name: "🇫🇷 الدوري الفرنسي" },
+        { code: "DED", name: "🇳🇱 الدوري الهولندي" },
+        { code: "PPL", name: "🇵🇹 الدوري البرتغالي" },
+        { code: "BSA", name: "🇧🇷 الدوري البرازيلي" },
+        { code: "ELC", name: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Championship" },
+        { code: "CL", name: "🌟 دوري الأبطال" },
+        { code: "WC", name: "🌍 كأس العالم" },
+        { code: "EC", name: "🇪🇺 كأس الأمم الأوروبية" }
+    ];
+
+    // ======================== إدارة الطلبات (Rate Limiter + Queue) ========================
+    let requestTimestamps = [];      // تخزين أوقات الطلبات (timestamp ms)
+    let pendingQueue = [];           // قائمة الدوال التي تنتظر التنفيذ
+    let processing = false;
+    let requestsUsed = 0;            // عدد الطلبات في النافذة الحالية (آخر 60 ثانية)
+
+    // تحديث واجهة حالة الطلبات
+    function updateRateUI() {
+        document.getElementById("requestsUsed").innerText = requestsUsed;
+        document.getElementById("queueLength").innerText = pendingQueue.length;
+        const now = Date.now();
+        const oldestValid = now - 60000;
+        const recentCount = requestTimestamps.filter(t => t > oldestValid).length;
+        const remaining = Math.max(0, RATE_LIMIT - recentCount);
+        if (remaining === 0 && pendingQueue.length === 0) {
+            document.getElementById("rateStatus").innerHTML = "⏸️ تم الوصول للحد، انتظر...";
+        } else {
+            document.getElementById("rateStatus").innerHTML = "🟢 نشط";
+        }
+    }
+
+    // دالة حقيقية لتنفيذ طلب (تسجيل الوقت + fetch)
+    async function executeRequest(url, options) {
+        const now = Date.now();
+        requestTimestamps.push(now);
+        // تنظيف الطوابع الأقدم من 60 ثانية
+        requestTimestamps = requestTimestamps.filter(ts => ts > now - 60000);
+        requestsUsed = requestTimestamps.length;
+        updateRateUI();
+
         try {
-            const response = await fetch(PROXY_URL + encodeURIComponent(`${API_BASE}/${endpoint}`));
-            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+            const response = await fetch(url, options);
+            if (response.status === 429) {
+                // تجاوز الحد من جانب الخادم (قد يحدث رغم تحكمنا)
+                throw new Error("RATE_LIMIT_EXCEEDED");
+            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return await response.json();
-        } catch(e) {
-            console.warn(`API Error ${endpoint}:`, e);
-            return null;
+        } catch (err) {
+            if (err.message === "RATE_LIMIT_EXCEEDED") throw err;
+            console.error("Fetch error:", err);
+            throw new Error("فشل الاتصال بالخادم");
         }
     }
-    
-    // جلب المباريات
-    async function fetchMatches() {
-        const today = new Date().toISOString().split('T')[0];
-        const [liveData, fixturesData] = await Promise.all([
-            fetchAPI('fixtures/live'),
-            fetchAPI(`fixtures/date/${today}`)
-        ]);
-        
-        let matches = [];
-        if (liveData?.data) matches.push(...liveData.data);
-        if (fixturesData?.data) matches.push(...fixturesData.data);
-        
-        matches = matches.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-        
-        return matches.map(m => ({
-            id: m.id,
-            homeTeam: m.home_team?.name || 'فريق',
-            awayTeam: m.away_team?.name || 'فريق',
-            homeScore: m.scores?.home_score ?? '',
-            awayScore: m.scores?.away_score ?? '',
-            leagueName: m.league_name || 'دوري',
-            status: m.status || 'SCHEDULED',
-            isLive: m.status === 'LIVE' || m.status === 'HT' || m.status === '2H',
-            isFinished: m.status === 'FT' || m.status === 'AET',
-            time: m.starting_at ? new Date(m.starting_at).toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) : '—'
-        }));
-    }
-    
-    // جلب الترتيب
-    async function fetchStandings(leagueSlug) {
-        const data = await fetchAPI(`standings/${leagueSlug}`);
-        if (data?.data) return data.data;
-        return generateDemoStandings();
-    }
-    
-    // جلب الهدافين
-    async function fetchTopScorers(leagueSlug) {
-        const data = await fetchAPI(`top-scorers/${leagueSlug}`);
-        if (data?.data) return data.data;
-        return generateDemoScorers();
-    }
-    
-    // بيانات احتياطية (في حالة فشل API)
-    function generateDemoStandings() {
-        const teams = ['مانشستر سيتي', 'أرسنال', 'ليفربول', 'أستون فيلا', 'توتنهام', 'تشيلسي', 'نيوكاسل', 'مانشستر يونايتد'];
-        return teams.map((team, i) => ({
-            rank: i + 1,
-            team: team,
-            played: 28,
-            won: 28 - i - Math.floor(Math.random() * 8),
-            drawn: Math.floor(Math.random() * 5),
-            lost: Math.floor(Math.random() * 8),
-            goalsFor: 60 - i * 2,
-            goalsAgainst: 30 + i * 2,
-            points: (28 - i - Math.floor(Math.random() * 8)) * 3 + Math.floor(Math.random() * 5)
-        }));
-    }
-    
-    function generateDemoScorers() {
-        const players = [
-            { name: 'إرلينغ هالاند', team: 'مانشستر سيتي', goals: 21 },
-            { name: 'محمد صلاح', team: 'ليفربول', goals: 19 },
-            { name: 'دومينيك سولانكي', team: 'بورنموث', goals: 16 },
-            { name: 'كول بالمر', team: 'تشيلسي', goals: 15 },
-            { name: 'بوخايو ساكا', team: 'أرسنال', goals: 14 }
-        ];
-        return players.map((p, i) => ({ rank: i + 1, ...p }));
-    }
-    
-    // ========== عرض المباريات ==========
-    function renderMatches(matches) {
-        if (!matches || matches.length === 0) {
-            return '<div class="empty-state"><i class="fas fa-calendar-times"></i><p>لا توجد مباريات حالياً</p></div>';
+
+    // معالج قائمة الانتظار
+    async function processQueue() {
+        if (processing) return;
+        processing = true;
+        while (pendingQueue.length > 0) {
+            const now = Date.now();
+            const recentCount = requestTimestamps.filter(ts => ts > now - 60000).length;
+            if (recentCount >= RATE_LIMIT) {
+                // ننتظر حتى يتحرر طلب (أقصى وقت 60 ثانية)
+                const oldestTimestamp = Math.min(...requestTimestamps);
+                const waitTime = 60000 - (now - oldestTimestamp) + 100;
+                if (waitTime > 0 && waitTime < 60000) {
+                    document.getElementById("rateStatus").innerHTML = `⏳ انتظر ${Math.ceil(waitTime/1000)} ثانية`;
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    continue;
+                }
+            }
+            const task = pendingQueue.shift();
+            updateRateUI();
+            try {
+                await task();
+            } catch (err) {
+                console.error("Task error", err);
+            }
+            // إعطاء استراحة صغيرة بين الطلبات
+            await new Promise(r => setTimeout(r, 200));
         }
-        
-        return `
-            <div class="matches-grid">
-                ${matches.map(m => {
-                    let statusClass = 'scheduled';
-                    let statusText = '📅 قادمة';
-                    if (m.isLive) {
-                        statusClass = 'live';
-                        statusText = '🟢 مباشر';
-                    } else if (m.isFinished) {
-                        statusClass = 'finished';
-                        statusText = '✅ انتهت';
-                    }
-                    
-                    const homeScoreDisplay = m.homeScore !== '' ? m.homeScore : '—';
-                    const awayScoreDisplay = m.awayScore !== '' ? m.awayScore : '—';
-                    
-                    return `
-                        <div class="match-card">
-                            <div class="match-header">
-                                <div class="tournament-badge">
-                                    <i class="fas fa-trophy"></i>
-                                    <span>${m.leagueName}</span>
-                                </div>
-                                <div class="match-status ${statusClass}">${statusText}</div>
-                            </div>
-                            <div class="teams-container">
-                                <div class="team">
-                                    <div class="team-name">${m.homeTeam}</div>
-                                    <div class="team-score">${homeScoreDisplay}</div>
-                                </div>
-                                <div class="vs-divider">VS</div>
-                                <div class="team">
-                                    <div class="team-name">${m.awayTeam}</div>
-                                    <div class="team-score">${awayScoreDisplay}</div>
-                                </div>
-                            </div>
-                            <div class="match-footer">
-                                <span><i class="far fa-clock"></i> ${m.time}</span>
-                                <span><i class="fas fa-chart-line"></i> إحصائيات حية</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
+        processing = false;
+        updateRateUI();
     }
-    
-    // ========== عرض الترتيب ==========
-    function renderStandings(standings) {
-        if (!standings || standings.length === 0) {
-            return '<div class="empty-state"><i class="fas fa-chart-line"></i><p>لا توجد بيانات ترتيب</p></div>';
+
+    // واجهة عامة لإضافة طلب إلى قائمة الانتظار مع تخزين مؤقت
+    const cache = new Map(); // key: url, value: { data, timestamp }
+
+    async function fetchWithQueue(endpoint, params = {}) {
+        const url = new URL(`${BASE_URL}${endpoint}`);
+        Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+        const cacheKey = url.toString();
+        // التحقق من التخزين المؤقت
+        if (cache.has(cacheKey)) {
+            const entry = cache.get(cacheKey);
+            if (Date.now() - entry.timestamp < CACHE_TTL) {
+                // console.log("Cache hit", cacheKey);
+                return entry.data;
+            } else {
+                cache.delete(cacheKey);
+            }
         }
-        
-        return `
-            <div class="standings-wrapper">
-                <table class="standings-table">
-                    <thead>
-                        <tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>±</th><th>نقاط</th></tr>
-                    </thead>
-                    <tbody>
-                        ${standings.map(t => `
-                            <tr>
-                                <td><span style="font-weight:700;color:#3B82F6">${t.rank}</span></td>
-                                <td><div class="team-cell"><span>${t.team}</span></div></td>
-                                <td>${t.played}</td>
-                                <td>${t.won}</td>
-                                <td>${t.drawn}</td>
-                                <td>${t.lost}</td>
-                                <td>${t.goalsFor}</td>
-                                <td>${t.goalsAgainst}</td>
-                                <td>${t.goalsFor - t.goalsAgainst}</td>
-                                <td><span style="font-weight:700;color:#FBBF24">${t.points}</span></td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+
+        return new Promise((resolve, reject) => {
+            const task = async () => {
+                try {
+                    const data = await executeRequest(url.toString(), {
+                        headers: { "X-Auth-Token": API_KEY }
+                    });
+                    cache.set(cacheKey, { data, timestamp: Date.now() });
+                    resolve(data);
+                } catch (err) {
+                    reject(err);
+                }
+            };
+            pendingQueue.push(task);
+            updateRateUI();
+            processQueue();
+        });
     }
-    
-    // ========== عرض الهدافين ==========
-    function renderScorers(scorers) {
-        if (!scorers || scorers.length === 0) {
-            return '<div class="empty-state"><i class="fas fa-futbol"></i><p>لا توجد بيانات هدافين</p></div>';
+
+    // ======================== دوال جلب البيانات (مع queue) ========================
+    async function getMatches(leagueCode, status, limit = 30) {
+        try {
+            const data = await fetchWithQueue(`/competitions/${leagueCode}/matches`, { status, limit });
+            return data.matches || [];
+        } catch (e) {
+            console.warn(e);
+            return [];
         }
-        
-        return `
-            <div class="scorers-list">
-                ${scorers.map(s => `
-                    <div class="scorer-item">
-                        <div class="scorer-rank">#${s.rank}</div>
-                        <div class="scorer-info">
-                            <div class="scorer-name">${s.name}</div>
-                            <div class="scorer-team"><i class="fas fa-users"></i> ${s.team}</div>
-                        </div>
-                        <div class="scorer-goals"><i class="fas fa-futbol"></i> ${s.goals}</div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
     }
-    
-    // ========== إحصائيات الفريق ==========
-    async function searchTeam(teamName) {
-        const container = document.getElementById('teamStatsContainer');
-        if (!teamName.trim()) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>أدخل اسم فريق للبحث</p></div>';
+
+    async function getStandings(leagueCode) {
+        try {
+            const data = await fetchWithQueue(`/competitions/${leagueCode}/standings`);
+            return data.standings?.[0]?.table || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async function getTopScorers(leagueCode) {
+        try {
+            const data = await fetchWithQueue(`/competitions/${leagueCode}/scorers`, { limit: 10 });
+            return data.scorers || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // ======================== منطق الدوريات النشطة (ذكي: يتحقق فقط من 1 مباراة SCHEDULED) ========================
+    async function isLeagueActive(leagueCode) {
+        const matches = await getMatches(leagueCode, "SCHEDULED", 1);
+        if (matches.length > 0) return true;
+        const finishedMatches = await getMatches(leagueCode, "FINISHED", 1);
+        return finishedMatches.length > 0;
+    }
+
+    async function fetchActiveLeagues() {
+        const active = [];
+        for (const comp of ALL_COMPETITIONS) {
+            const activeFlag = await isLeagueActive(comp.code);
+            if (activeFlag) active.push(comp);
+            // نعطي فترة راحة خفيفة بين كل دورية لتجنب ضغط الطلبات (لكن queue سيديرها)
+            await new Promise(r => setTimeout(r, 300));
+        }
+        return active;
+    }
+
+    // ======================== دوال العرض ========================
+    function renderUpcoming(matches, containerId = "upcomingContainer") {
+        const container = document.getElementById(containerId);
+        if (!matches.length) {
+            container.innerHTML = '<div class="error">📭 لا توجد مباريات قادمة في هذا الدوري</div>';
             return;
         }
-        
-        container.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب بيانات الفريق...</div>';
-        
-        try {
-            const matches = await fetchMatches();
-            const teamMatches = matches.filter(m => 
-                m.homeTeam.toLowerCase().includes(teamName.toLowerCase()) || 
-                m.awayTeam.toLowerCase().includes(teamName.toLowerCase())
-            );
-            
-            if (teamMatches.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>لم يتم العثور على فريق باسم "${teamName}"</p></div>`;
-                return;
-            }
-            
-            // حساب إحصائيات الفريق
-            const teamStats = {
-                played: teamMatches.length,
-                won: teamMatches.filter(m => m.homeTeam.toLowerCase().includes(teamName.toLowerCase()) && m.homeScore > m.awayScore && m.isFinished).length +
-                      teamMatches.filter(m => m.awayTeam.toLowerCase().includes(teamName.toLowerCase()) && m.awayScore > m.homeScore && m.isFinished).length,
-                drawn: teamMatches.filter(m => (m.homeScore === m.awayScore) && m.homeScore !== '' && m.isFinished).length,
-                lost: teamMatches.filter(m => m.isFinished && !((m.homeTeam.toLowerCase().includes(teamName.toLowerCase()) && m.homeScore > m.awayScore) ||
-                      (m.awayTeam.toLowerCase().includes(teamName.toLowerCase()) && m.awayScore > m.homeScore)) && m.homeScore !== '' && m.homeScore !== '' && m.homeScore !== m.awayScore).length,
-                goalsFor: teamMatches.reduce((sum, m) => {
-                    if (m.homeTeam.toLowerCase().includes(teamName.toLowerCase())) return sum + (parseInt(m.homeScore) || 0);
-                    if (m.awayTeam.toLowerCase().includes(teamName.toLowerCase())) return sum + (parseInt(m.awayScore) || 0);
-                    return sum;
-                }, 0),
-                goalsAgainst: teamMatches.reduce((sum, m) => {
-                    if (m.homeTeam.toLowerCase().includes(teamName.toLowerCase())) return sum + (parseInt(m.awayScore) || 0);
-                    if (m.awayTeam.toLowerCase().includes(teamName.toLowerCase())) return sum + (parseInt(m.homeScore) || 0);
-                    return sum;
-                }, 0)
-            };
-            
-            container.innerHTML = `
-                <div class="team-stats-card">
-                    <h3 style="margin-bottom:1rem"><i class="fas fa-users"></i> إحصائيات ${teamName}</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item"><div class="stat-label">المباريات</div><div class="stat-value">${teamStats.played}</div></div>
-                        <div class="stat-item"><div class="stat-label">فوز</div><div class="stat-value" style="color:#4ADE80">${teamStats.won}</div></div>
-                        <div class="stat-item"><div class="stat-label">تعادل</div><div class="stat-value" style="color:#FBBF24">${teamStats.drawn}</div></div>
-                        <div class="stat-item"><div class="stat-label">خسارة</div><div class="stat-value" style="color:#F87171">${teamStats.lost}</div></div>
-                        <div class="stat-item"><div class="stat-label">أهداف له</div><div class="stat-value">${teamStats.goalsFor}</div></div>
-                        <div class="stat-item"><div class="stat-label">أهداف عليه</div><div class="stat-value">${teamStats.goalsAgainst}</div></div>
-                        <div class="stat-item"><div class="stat-label">فارق الأهداف</div><div class="stat-value">${teamStats.goalsFor - teamStats.goalsAgainst}</div></div>
-                    </div>
+        container.innerHTML = matches.map(m => `
+            <div class="match-card">
+                <div class="teams">
+                    <span>${m.homeTeam?.name || "?"}</span>
+                    <span class="score">🆚</span>
+                    <span>${m.awayTeam?.name || "?"}</span>
                 </div>
-            `;
-        } catch(e) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>حدث خطأ في جلب البيانات</p></div>';
-        }
+                <div class="match-info">
+                    <span>📅 ${new Date(m.utcDate).toLocaleDateString("ar-EG")}</span>
+                    <span>⏰ ${new Date(m.utcDate).toLocaleTimeString("ar-EG", { hour:'2-digit', minute:'2-digit' })}</span>
+                </div>
+            </div>
+        `).join('');
     }
-    
-    // ========== تحديث جميع البيانات ==========
-    async function loadMatches() {
-        const container = document.getElementById('matchesContainer');
+
+    function renderPast(matches) {
+        const container = document.getElementById("pastContainer");
+        if (!matches.length) {
+            container.innerHTML = '<div class="error">📭 لا توجد نتائج سابقة حديثة</div>';
+            return;
+        }
+        container.innerHTML = matches.map(m => {
+            const homeScore = m.score?.fullTime?.home ?? m.score?.halfTime?.home ?? "-";
+            const awayScore = m.score?.fullTime?.away ?? m.score?.halfTime?.away ?? "-";
+            return `
+            <div class="match-card">
+                <div class="teams">
+                    <span>${m.homeTeam?.name}</span>
+                    <span class="score">${homeScore} - ${awayScore}</span>
+                    <span>${m.awayTeam?.name}</span>
+                </div>
+                <div class="match-info"><span>📅 ${new Date(m.utcDate).toLocaleDateString("ar-EG")}</span><span>✅ منتهية</span></div>
+            </div>
+        `}).join('');
+    }
+
+    function renderStandings(table) {
+        const container = document.getElementById("standingsContainer");
+        if (!table.length) {
+            container.innerHTML = '<div class="error">لا يتوفر جدول ترتيب</div>';
+            return;
+        }
+        const html = `<table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>
+            ${table.map(t => `<tr><td>${t.position}</td><td style="text-align:right;">${t.team?.name}</td><td>${t.playedGames}</td><td><strong>${t.points}</strong></td></tr>`).join('')}
+        </tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function renderTopScorers(scorers) {
+        const container = document.getElementById("topscorersContainer");
+        if (!scorers.length) {
+            container.innerHTML = '<div class="error">⭐ لا تتوفر قائمة الهدافين لهذه البطولة</div>';
+            return;
+        }
+        const html = `<div style="display:flex; flex-direction:column; gap:12px;">${scorers.map((s,i)=>`
+            <div class="match-card" style="display:flex; justify-content:space-between;"><span>${i+1}. ${s.player?.name}</span><span>⚽ ${s.goals}</span><span>${s.team?.name}</span></div>
+        `).join('')}</div>`;
+        container.innerHTML = html;
+    }
+
+    // تحميل كامل البيانات لدوري معين
+    let currentLoadPromise = null;
+    async function loadAllTabsData(leagueCode) {
+        if (currentLoadPromise) return currentLoadPromise;
+        const showLoading = () => {
+            document.getElementById("upcomingContainer").innerHTML = '<div class="loader">⏳ جاري التحميل...</div>';
+            document.getElementById("pastContainer").innerHTML = '<div class="loader">⏳ جاري التحميل...</div>';
+            document.getElementById("standingsContainer").innerHTML = '<div class="loader">⏳ جاري التحميل...</div>';
+            document.getElementById("topscorersContainer").innerHTML = '<div class="loader">⏳ جاري التحميل...</div>';
+        };
+        showLoading();
         try {
-            const matches = await fetchMatches();
-            container.innerHTML = renderMatches(matches);
-            
-            const totalMatches = matches.length;
-            const liveMatches = matches.filter(m => m.isLive).length;
-            document.getElementById('totalMatches').innerText = totalMatches;
-            document.getElementById('liveMatches').innerText = liveMatches;
-            document.getElementById('activeLeagues').innerText = '7';
-        } catch(e) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>حدث خطأ في جلب المباريات</p></div>';
+            const [upcoming, past, standings, scorers] = await Promise.all([
+                getMatches(leagueCode, "SCHEDULED", 30),
+                getMatches(leagueCode, "FINISHED", 20),
+                getStandings(leagueCode),
+                getTopScorers(leagueCode)
+            ]);
+            renderUpcoming(upcoming);
+            renderPast(past);
+            renderStandings(standings);
+            renderTopScorers(scorers);
+        } catch (err) {
+            document.getElementById("upcomingContainer").innerHTML = `<div class="error">خطأ: ${err.message}</div>`;
+        } finally {
+            currentLoadPromise = null;
         }
     }
-    
-    async function loadStandings() {
-        const container = document.getElementById('standingsContainer');
-        try {
-            const standings = await fetchStandings(currentLeague);
-            container.innerHTML = renderStandings(standings);
-        } catch(e) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>حدث خطأ في جلب الترتيب</p></div>';
+
+    // بناء القائمة المنسدلة بالدوريات النشطة فقط
+    async function buildLeagueSelector() {
+        const select = document.getElementById("leagueSelect");
+        select.innerHTML = '<option>⏳ جاري فحص الدوريات...</option>';
+        document.getElementById("warningMsg").style.display = "block";
+        const activeLeagues = await fetchActiveLeagues();
+        document.getElementById("warningMsg").style.display = "none";
+        if (activeLeagues.length === 0) {
+            select.innerHTML = '<option>⚠️ لا توجد بطولات تحتوي مباريات حالياً</option>';
+            return;
         }
-    }
-    
-    async function loadScorers() {
-        const container = document.getElementById('scorersContainer');
-        try {
-            const scorers = await fetchTopScorers(currentLeague);
-            container.innerHTML = renderScorers(scorers);
-        } catch(e) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>حدث خطأ في جلب الهدافين</p></div>';
-        }
-    }
-    
-    // ========== إنشاء محددات الدوري ==========
-    function renderLeagueSelectors() {
-        const selectors = ['matchesLeagueSelector', 'standingsLeagueSelector', 'scorersLeagueSelector'];
-        
-        selectors.forEach(selectorId => {
-            const container = document.getElementById(selectorId);
-            if (!container) return;
-            
-            container.innerHTML = Object.entries(leagues).map(([key, league]) => `
-                <button class="league-btn ${currentLeague === league.slug ? 'active' : ''}" data-league="${league.slug}" data-section="${selectorId.replace('LeagueSelector', '')}">
-                    ${league.name}
-                </button>
-            `).join('');
+        select.innerHTML = "";
+        activeLeagues.forEach(league => {
+            const option = document.createElement("option");
+            option.value = league.code;
+            option.textContent = league.name;
+            select.appendChild(option);
         });
-        
-        document.querySelectorAll('.league-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const league = btn.dataset.league;
-                const section = btn.dataset.section;
-                currentLeague = league;
-                
-                document.querySelectorAll('.league-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll(`[data-league="${league}"]`).forEach(b => b.classList.add('active'));
-                
-                if (section === 'standings') loadStandings();
-                if (section === 'scorers') loadScorers();
+        const firstCode = activeLeagues[0].code;
+        select.value = firstCode;
+        await loadAllTabsData(firstCode);
+    }
+
+    // أحداث التبويبات وتغيير الدوري
+    function setupTabsAndEvents() {
+        const tabs = document.querySelectorAll(".tab-btn");
+        tabs.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const tabId = btn.getAttribute("data-tab");
+                document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+                document.getElementById(tabId).classList.add("active");
+                tabs.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
             });
         });
-    }
-    
-    // ========== التنقل بين التبويبات ==========
-    function initTabs() {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentTab = btn.dataset.tab;
-                
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(`${currentTab}Section`).classList.add('active');
-            });
+        const select = document.getElementById("leagueSelect");
+        select.addEventListener("change", async (e) => {
+            const code = e.target.value;
+            if (code) await loadAllTabsData(code);
         });
     }
-    
-    // ========== بدء التشغيل ==========
+
+    // بدء التطبيق
     async function init() {
-        renderLeagueSelectors();
-        initTabs();
-        await loadMatches();
-        await loadStandings();
-        await loadScorers();
-        
-        document.getElementById('searchTeamBtn').addEventListener('click', () => {
-            const teamName = document.getElementById('teamSearchInput').value;
-            searchTeam(teamName);
-        });
-        
-        document.getElementById('teamSearchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') searchTeam(e.target.value);
-        });
-        
-        setInterval(async () => {
-            if (currentTab === 'matches') await loadMatches();
-        }, 60000);
+        setupTabsAndEvents();
+        await buildLeagueSelector();
     }
-    
     init();
 </script>
 </body>
