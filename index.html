@@ -374,7 +374,7 @@
         <div class="tagline">
             <span><i class="fas fa-trophy"></i> كأس العالم 2026</span>
             <span><i class="fas fa-futbol"></i> جميع البطولات</span>
-            <span><i class="fas fa-chart-line"></i> تحديث مباشر 10 ثواني</span>
+            <span><i class="fas fa-chart-line"></i> إحصائيات حية</span>
         </div>
     </div>
 
@@ -555,9 +555,12 @@
         }
     }
     
-    // ======================== الإحصائيات من SportScore API ========================
+    // ======================== إحصائيات من SportScore API (تم التعديل هنا فقط) ========================
+    
+    // جلب إحصائيات مباراة محددة (حية أو منتهية)
     async function fetchMatchStats(matchId) {
         try {
+            // استخدام endpoint المخصص للإحصائيات
             const response = await fetch(`${SPORTSCORE_API}/matches/football/${matchId}`);
             if (!response.ok) throw new Error("فشل تحميل الإحصائيات");
             const data = await response.json();
@@ -568,7 +571,7 @@
         }
     }
     
-    // ======================== تاريخ المواجهات ========================
+    // جلب تاريخ المواجهات بين فريقين (Head to Head)
     async function fetchHeadToHead(team1, team2) {
         try {
             const response = await fetch(`${SPORTSCORE_API}/head-to-head/football/${encodeURIComponent(team1)}/${encodeURIComponent(team2)}`);
@@ -581,10 +584,10 @@
         }
     }
     
-    // ======================== أداء الفريق (آخر 5 مباريات) ========================
+    // جلب أداء الفريق في آخر 5 مباريات
     async function fetchTeamForm(teamName) {
         try {
-            const response = await fetch(`${SPORTSCORE_API}/team-form/football/${encodeURIComponent(teamName)}`);
+            const response = await fetch(`${SPORTSCORE_API}/team-schedule/football/${encodeURIComponent(teamName)}?limit=5`);
             if (!response.ok) throw new Error("فشل تحميل أداء الفريق");
             const data = await response.json();
             return data.matches || [];
@@ -599,7 +602,7 @@
     let autoRefreshInterval = null;
     let isModalOpen = false;
     
-    // ======================== عرض الإحصائيات مع تحديث تلقائي ========================
+    // عرض الإحصائيات مع تحديث تلقائي كل 10 ثواني
     async function showMatchStats(matchId, homeTeam, awayTeam, matchDate, isFinished) {
         // إيقاف التحديث السابق إذا كان موجوداً
         if (autoRefreshInterval) {
@@ -613,7 +616,7 @@
         modal.classList.add("active");
         isModalOpen = true;
         
-        // دالة تحميل البيانات
+        // دالة تحميل الإحصائيات
         async function loadStats() {
             if (!currentMatchId) return;
             
@@ -621,7 +624,7 @@
             const refreshIndicator = document.querySelector('.refresh-indicator');
             if (refreshIndicator) refreshIndicator.style.background = "#f59e0b";
             
-            // تحميل الإحصائيات
+            // تحميل الإحصائيات من SportScore API
             const stats = await fetchMatchStats(currentMatchId);
             
             if (stats && stats.stats) {
@@ -745,7 +748,7 @@
         document.getElementById('statsModal').classList.remove('active');
     }
     
-    // ======================== عرض المباريات ========================
+    // ======================== عرض المباريات (لم يتغير) ========================
     async function renderMatches() {
         const container = document.getElementById("matchesContainer");
         container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل المباريات...</div>';
@@ -855,7 +858,7 @@
         </div>`;
     }
     
-    // ======================== جدول الترتيب ========================
+    // ======================== جدول الترتيب (لم يتغير) ========================
     async function renderStandings() {
         const container = document.getElementById("standingsContainer");
         
@@ -873,7 +876,7 @@
             const standings = data.standings || [];
             
             if (standings && standings.length > 0) {
-                let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></table></thead><tbody>';
+                let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></tr></thead><tbody>';
                 standings.slice(0, 15).forEach((team, idx) => {
                     html += `<tr>
                         <td>${idx + 1}</td>
@@ -897,7 +900,7 @@
         }
     }
     
-    // ======================== الهدافون ========================
+    // ======================== الهدافون (لم يتغير) ========================
     async function renderScorers() {
         const container = document.getElementById("scorersContainer");
         
@@ -941,7 +944,7 @@
         }
     }
     
-    // ======================== النوافذ المنبثقة ========================
+    // ======================== النوافذ المنبثقة (لم تتغير) ========================
     function openListModal(title, items) {
         const modal = document.getElementById('listModal');
         document.getElementById('listModalTitle').innerText = title;
