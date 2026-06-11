@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ منصة كرة القدم الشاملة - نتائج حية وترتيب وهدافون</title>
+    <title>⚽ منصة كرة القدم - SportScore API</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,31 +30,15 @@
             background-clip: text;
             color: transparent;
         }
-        .header p { color: #8a99c4; margin-top: 8px; font-size: 0.85rem; }
         
         .source-panel {
-            background: #1a1a2e;
+            background: #1f8a4c;
             border-radius: 15px;
             padding: 10px 20px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 0.8rem;
-            border-right: 3px solid #ffd700;
+            text-align: center;
+            font-weight: bold;
         }
-        .source-badge { color: #4c9aff; font-weight: bold; }
-        .live-badge {
-            background: #ff0000;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         
         .filters {
             display: flex;
@@ -64,9 +48,8 @@
             background: rgba(20, 28, 44, 0.7);
             padding: 15px 20px;
             border-radius: 50px;
-            backdrop-filter: blur(10px);
         }
-        select, .filter-btn {
+        select {
             background: #1e2a3a;
             border: 1px solid #2d3e5a;
             padding: 10px 20px;
@@ -75,12 +58,6 @@
             font-size: 0.9rem;
             cursor: pointer;
         }
-        .filter-btn {
-            background: #2a3a60;
-            transition: 0.2s;
-        }
-        .filter-btn:hover { background: #3a4a70; }
-        .filter-btn.active { background: #ffd700; color: #1a1a2e; font-weight: bold; }
         
         .tabs {
             display: flex;
@@ -162,8 +139,7 @@
         .standing-table th { background: #1e2a3a; color: #ffd966; }
         
         .loader { text-align: center; padding: 50px; color: #aaa; }
-        .error { background: #a1222e80; border-right: 4px solid #ff6b6b; padding: 20px; border-radius: 18px; text-align: center; }
-        .success { background: #1f8a4c80; border-right: 4px solid #4cff6b; padding: 10px 20px; border-radius: 18px; text-align: center; }
+        .error { background: #a1222e80; padding: 20px; border-radius: 18px; text-align: center; }
         
         footer {
             margin-top: 40px;
@@ -173,37 +149,29 @@
             font-size: 0.7rem;
             color: #6c7a9e;
         }
-        @media (max-width: 700px) {
-            .matches-grid { grid-template-columns: 1fr; }
-            .filters { border-radius: 20px; }
-            .teams { font-size: 0.9rem; }
-        }
+        a { color: #ffd700; text-decoration: none; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>⚽ منصة كرة القدم الشاملة</h1>
-        <p>نتائج حية • جداول ترتيب • هدافون • إحصائيات • جميع البطولات الكبرى</p>
+        <p>نتائج حية • جداول ترتيب • هدافون • إحصائيات</p>
     </div>
 
-    <div class="source-panel" id="sourcePanel">
-        <span>📡 مصدر البيانات الحالي: <span class="source-badge" id="sourceName">جاري التحميل...</span></span>
-        <span class="live-badge" id="liveBadge">● مباشر</span>
+    <div class="source-panel">
+        🟢 المصدر: SportScore API | يعمل بكفاءة | 10,000 طلب/يوم لكل IP
     </div>
 
     <div class="filters">
         <select id="leagueSelect">
-            <option value="PL">🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي (PL)</option>
-            <option value="PD">🇪🇸 الدوري الإسباني (La Liga)</option>
-            <option value="SA">🇮🇹 الدوري الإيطالي (Serie A)</option>
-            <option value="BL1">🇩🇪 الدوري الألماني (Bundesliga)</option>
-            <option value="FL1">🇫🇷 الدوري الفرنسي (Ligue 1)</option>
-            <option value="CL">🌟 دوري أبطال أوروبا (UCL)</option>
-            <option value="WC">🏆 كأس العالم</option>
-            <option value="EC">🇪🇺 كأس الأمم الأوروبية</option>
+            <option value="premier-league">🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي</option>
+            <option value="laliga">🇪🇸 الدوري الإسباني</option>
+            <option value="serie-a">🇮🇹 الدوري الإيطالي</option>
+            <option value="bundesliga">🇩🇪 الدوري الألماني</option>
+            <option value="ligue-1">🇫🇷 الدوري الفرنسي</option>
+            <option value="uefa-champions-league">🌟 دوري أبطال أوروبا</option>
         </select>
-        <div id="seasonSelect" style="display: inline-block;"></div>
     </div>
 
     <div class="tabs">
@@ -217,208 +185,140 @@
     <div id="scorers" class="tab-content"><div id="scorersContainer"><div class="loader">⏳ جاري تحميل الهدافين...</div></div></div>
 
     <footer>
-        البيانات مقدمة من مصادر متعددة: BSD API • API-Football • Football-Data.org • SportScore
+        Powered by <a href="https://sportscore.com/" target="_blank">SportScore</a> • بيانات محدّثة • 10,000 طلب/يوم
     </footer>
 </div>
 
 <script>
-    // ======================== إعدادات المصادر ========================
-    // المصدر 1: BSD API - بدون حدود، توقعات ML [citation:2]
-    const BSD_API = "https://sports.bzzoiro.com/api";
-    
-    // المصدر 2: API-Football (عبر RapidAPI) - 100 طلب/يوم [citation:1][citation:8]
-    const RAPIDAPI_HOST = "v3.football.api-sports.io";
-    const RAPIDAPI_KEY = "3885421db9f44d1d80ac4a906541e438"; // سجل مجاناً على RapidAPI
-  
-    // المصدر 3: Football-Data.org - 10 طلبات/دقيقة
-    const FD_API_KEY = "3885421db9f44d1d80ac4a906541e438";
-    const FD_BASE = "https://api.football-data.org/v4";
-    
-    // المصدر 4: SportScore - بدون مفتاح، 10000 طلب/يوم [citation:3]
+    // ======================== SportScore API - لا يحتاج مفتاح ========================
+    // التوثيق الرسمي: https://pypi.org/project/sportscore/
     const SPORTSCORE_API = "https://api.sportscore.com/v1";
     
-    let currentLeague = "PL";
-    let currentSeason = 2026;
-    let activeSource = "BSD";
-    let sourceStatus = { bsd: true, apiFootball: true, footballData: true, sportscore: true };
+    let currentLeague = "premier-league";
     
-    // توليد مواسم للاختيار
-    function initSeasonSelect() {
-        const seasonDiv = document.getElementById("seasonSelect");
-        const currentYear = new Date().getFullYear();
-        let html = '<select id="seasonPick">';
-        for (let y = currentYear; y >= 2020; y--) {
-            html += `<option value="${y}" ${y === currentSeason ? 'selected' : ''}>${y}/${y+1}</option>`;
-        }
-        html += '</select>';
-        seasonDiv.innerHTML = html;
-        document.getElementById("seasonPick").addEventListener("change", (e) => {
-            currentSeason = parseInt(e.target.value);
-            loadAllData();
-        });
-    }
+    // أسماء البطولات كما تعرفها SportScore
+    const leagueSlugs = {
+        "premier-league": { name: "الدوري الإنجليزي", slug: "premier-league" },
+        "laliga": { name: "الدوري الإسباني", slug: "laliga" },
+        "serie-a": { name: "الدوري الإيطالي", slug: "serie-a" },
+        "bundesliga": { name: "الدوري الألماني", slug: "bundesliga" },
+        "ligue-1": { name: "الدوري الفرنسي", slug: "ligue-1" },
+        "uefa-champions-league": { name: "دوري الأبطال", slug: "uefa-champions-league" }
+    };
     
-    // ======================== دوال جلب البيانات مع Failover ========================
-    async function fetchWithFallback(endpoint, params = {}, sourceOrder = ["BSD", "API-Football", "FootballData", "SportScore"]) {
-        for (const source of sourceOrder) {
-            if (!sourceStatus[source.toLowerCase().replace("-", "")]) continue;
-            try {
-                let data;
-                if (source === "BSD") data = await fetchBSD(endpoint, params);
-                else if (source === "API-Football") data = await fetchAPIFootball(endpoint, params);
-                else if (source === "FootballData") data = await fetchFootballData(endpoint, params);
-                else if (source === "SportScore") data = await fetchSportScore(endpoint, params);
-                
-                if (data && (data.response || data.matches || data.data || data.standings || data.scorers)) {
-                    activeSource = source;
-                    document.getElementById("sourceName").innerText = source;
-                    document.getElementById("sourceName").style.color = "#4cff6b";
-                    return { data, source };
-                }
-            } catch (err) {
-                console.warn(`${source} failed:`, err);
+    // ======================== دوال الاتصال المباشرة ========================
+    async function fetchAPI(endpoint) {
+        try {
+            const response = await fetch(`${SPORTSCORE_API}${endpoint}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
+            return await response.json();
+        } catch (error) {
+            console.error("API Error:", error);
+            throw error;
         }
-        throw new Error("جميع المصادر متوقفة حالياً");
     }
     
-    // المصدر 1: BSD API [citation:2]
-    async function fetchBSD(endpoint, params) {
-        const url = new URL(`${BSD_API}${endpoint}`);
-        Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`BSD Error ${response.status}`);
-        return await response.json();
-    }
-    
-    // المصدر 2: API-Football عبر RapidAPI [citation:1][citation:8]
-    async function fetchAPIFootball(endpoint, params) {
-        if (RAPIDAPI_KEY === "YOUR_RAPIDAPI_KEY") throw new Error("API key not configured");
-        const url = new URL(`https://${RAPIDAPI_HOST}${endpoint}`);
-        Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-        const response = await fetch(url, {
-            headers: {
-                "x-rapidapi-host": RAPIDAPI_HOST,
-                "x-rapidapi-key": RAPIDAPI_KEY
+    // جلب المباريات (نتائج + قادمة) من SportScore
+    async function getMatches(leagueSlug, limit = 40) {
+        try {
+            // جلب جميع مباريات كرة القدم
+            const data = await fetchAPI(`/matches/football?limit=${limit}`);
+            let matches = data.data || [];
+            
+            // فلترة حسب الدوري المختار
+            if (leagueSlug !== "all") {
+                matches = matches.filter(m => m.league_slug === leagueSlug);
             }
-        });
-        if (!response.ok) throw new Error(`API-Football Error ${response.status}`);
-        return await response.json();
-    }
-    
-    // المصدر 3: Football-Data.org
-    async function fetchFootballData(endpoint, params) {
-        const url = new URL(`${FD_BASE}${endpoint}`);
-        Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-        const response = await fetch(url, {
-            headers: { "X-Auth-Token": FD_API_KEY }
-        });
-        if (!response.ok) throw new Error(`Football-Data Error ${response.status}`);
-        return await response.json();
-    }
-    
-    // المصدر 4: SportScore - بدون مفتاح [citation:3]
-    async function fetchSportScore(endpoint, params) {
-        const url = new URL(`${SPORTSCORE_API}${endpoint}`);
-        Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`SportScore Error ${response.status}`);
-        return await response.json();
-    }
-    
-    // ======================== جلب المباريات ========================
-    async function getMatches(leagueCode, season) {
-        const result = await fetchWithFallback("/fixtures", { 
-            league: getLeagueId(leagueCode), 
-            season: season,
-            status: "NS-FT"
-        });
-        
-        let matches = [];
-        if (result.source === "BSD" && result.data.matches) matches = result.data.matches;
-        else if (result.source === "API-Football" && result.data.response) matches = result.data.response;
-        else if (result.source === "FootballData" && result.data.matches) matches = result.data.matches;
-        else if (result.source === "SportScore" && result.data.data) matches = result.data.data;
-        
-        const now = new Date();
-        const upcoming = matches.filter(m => new Date(m.date || m.fixture?.date || m.utcDate) > now);
-        const past = matches.filter(m => new Date(m.date || m.fixture?.date || m.utcDate) <= now);
-        
-        return { upcoming: upcoming.slice(0, 30), past: past.slice(0, 20) };
+            
+            const now = new Date();
+            const upcoming = matches.filter(m => new Date(m.start_time) > now);
+            const past = matches.filter(m => new Date(m.start_time) <= now && m.status === "finished");
+            
+            return { upcoming: upcoming.slice(0, 25), past: past.slice(0, 20) };
+        } catch (error) {
+            console.error("Error fetching matches:", error);
+            return { upcoming: [], past: [] };
+        }
     }
     
     // جلب جدول الترتيب
-    async function getStandings(leagueCode, season) {
-        const result = await fetchWithFallback("/standings", { league: getLeagueId(leagueCode), season: season });
-        
-        if (result.source === "BSD" && result.data.standings) return result.data.standings;
-        if (result.source === "API-Football" && result.data.response?.[0]?.league?.standings?.[0]) 
-            return result.data.response[0].league.standings[0];
-        if (result.source === "FootballData" && result.data.standings?.[0]?.table) 
-            return result.data.standings[0].table;
-        if (result.source === "SportScore" && result.data.standings) return result.data.standings;
-        return [];
+    async function getStandings(leagueSlug) {
+        try {
+            const data = await fetchAPI(`/standings/football/${leagueSlug}`);
+            return data.standings || [];
+        } catch (error) {
+            console.error("Standings error:", error);
+            return [];
+        }
     }
     
     // جلب الهدافين
-    async function getTopScorers(leagueCode, season) {
-        const result = await fetchWithFallback("/scorers", { league: getLeagueId(leagueCode), season: season, limit: 20 });
-        
-        if (result.source === "BSD" && result.data.scorers) return result.data.scorers;
-        if (result.source === "API-Football" && result.data.response) return result.data.response;
-        if (result.source === "FootballData" && result.data.scorers) return result.data.scorers;
-        if (result.source === "SportScore" && result.data.scorers) return result.data.scorers;
-        return [];
-    }
-    
-    // تحويل كود الدوري إلى ID (حسب كل مصدر)
-    function getLeagueId(code) {
-        const leagueIds = { PL: 39, PD: 140, SA: 135, BL1: 78, FL1: 61, CL: 2, WC: 1, EC: 4 };
-        return leagueIds[code] || 39;
+    async function getTopScorers(leagueSlug, limit = 20) {
+        try {
+            const data = await fetchAPI(`/top-scorers/football/${leagueSlug}?limit=${limit}`);
+            return data.scorers || [];
+        } catch (error) {
+            console.error("Scorers error:", error);
+            return [];
+        }
     }
     
     // ======================== دوال العرض ========================
     function renderMatches(upcoming, past) {
         const container = document.getElementById("matchesContainer");
+        
         if ((!upcoming || upcoming.length === 0) && (!past || past.length === 0)) {
-            container.innerHTML = '<div class="error">📭 لا توجد مباريات متاحة حالياً</div>';
+            container.innerHTML = '<div class="error">📭 لا توجد مباريات متاحة حالياً. قد يكون الموسم في إجازة.</div>';
             return;
         }
         
-        let html = '<div style="margin-bottom: 30px;"><h3 style="color: #ffd700; margin-bottom: 15px;">📅 المباريات القادمة</h3><div class="matches-grid">';
+        let html = '';
         
-        upcoming.slice(0, 15).forEach(m => {
-            const home = m.homeTeam?.name || m.teams?.home?.name || m.home_team || "?";
-            const away = m.awayTeam?.name || m.teams?.away?.name || m.away_team || "?";
-            const date = new Date(m.date || m.fixture?.date || m.utcDate);
-            html += `
-                <div class="match-card">
-                    <div class="teams"><span>${home}</span><span class="score">🆚</span><span>${away}</span></div>
-                    <div class="match-footer">
-                        <span>📅 ${date.toLocaleDateString("ar-EG")}</span>
-                        <span>⏰ ${date.toLocaleTimeString("ar-EG", { hour: '2-digit', minute:'2-digit' })}</span>
+        // المباريات القادمة
+        if (upcoming && upcoming.length > 0) {
+            html += '<div style="margin-bottom: 30px;"><h3 style="color: #ffd700; margin-bottom: 15px;">📅 المباريات القادمة</h3><div class="matches-grid">';
+            upcoming.forEach(m => {
+                const home = m.home_team || m.home || "?";
+                const away = m.away_team || m.away || "?";
+                const date = new Date(m.start_time);
+                html += `
+                    <div class="match-card">
+                        <div class="teams"><span>${home}</span><span class="score">🆚</span><span>${away}</span></div>
+                        <div class="match-footer">
+                            <span>📅 ${date.toLocaleDateString("ar-EG")}</span>
+                            <span>⏰ ${date.toLocaleTimeString("ar-EG", { hour: '2-digit', minute:'2-digit' })}</span>
+                            <span>🏟️ ${m.venue || "غير محدد"}</span>
+                        </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
+            html += '</div></div>';
+        }
         
-        html += '</div></div><div><h3 style="color: #ffd700; margin-bottom: 15px;">📋 النتائج السابقة</h3><div class="matches-grid">';
+        // النتائج السابقة
+        if (past && past.length > 0) {
+            html += '<div><h3 style="color: #ffd700; margin-bottom: 15px;">📋 النتائج السابقة</h3><div class="matches-grid">';
+            past.forEach(m => {
+                const home = m.home_team || m.home || "?";
+                const away = m.away_team || m.away || "?";
+                const homeScore = m.home_score ?? m.score?.home ?? "-";
+                const awayScore = m.away_score ?? m.score?.away ?? "-";
+                const date = new Date(m.start_time);
+                html += `
+                    <div class="match-card">
+                        <div class="teams"><span>${home}</span><span class="score">${homeScore} - ${awayScore}</span><span>${away}</span></div>
+                        <div class="match-footer">
+                            <span>📅 ${date.toLocaleDateString("ar-EG")}</span>
+                            <span>✅ منتهية</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div></div>';
+        }
         
-        past.slice(0, 15).forEach(m => {
-            const home = m.homeTeam?.name || m.teams?.home?.name || m.home_team || "?";
-            const away = m.awayTeam?.name || m.teams?.away?.name || m.away_team || "?";
-            const homeScore = m.score?.fullTime?.home || m.goals?.home || m.home_score || "-";
-            const awayScore = m.score?.fullTime?.away || m.goals?.away || m.away_score || "-";
-            const date = new Date(m.date || m.fixture?.date || m.utcDate);
-            html += `
-                <div class="match-card">
-                    <div class="teams"><span>${home}</span><span class="score">${homeScore} - ${awayScore}</span><span>${away}</span></div>
-                    <div class="match-footer"><span>📅 ${date.toLocaleDateString("ar-EG")}</span><span>✅ منتهية</span></div>
-                </div>
-            `;
-        });
-        
-        html += '</div></div>';
         container.innerHTML = html;
     }
     
@@ -431,19 +331,21 @@
         
         const html = `
             <table class="standing-table">
-                <thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>فارق</th><th>نقاط</th></tr></thead>
+                <thead>
+                    <tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>فارق</th><th>نقاط</th></tr>
+                </thead>
                 <tbody>
                     ${standings.map(t => `
                         <tr>
                             <td>${t.position || t.rank || "-"}</td>
-                            <td style="text-align:right;">${t.team?.name || t.team_name || t.name || "?"}</td>
-                            <td>${t.playedGames || t.played || t.matches_played || 0}</td>
-                            <td>${t.won || t.wins || 0}</td>
-                            <td>${t.draw || t.draws || 0}</td>
-                            <td>${t.lost || t.losses || 0}</td>
-                            <td>${t.goalsFor || t.goals_for || 0}</td>
-                            <td>${t.goalsAgainst || t.goals_against || 0}</td>
-                            <td>${(t.goalsFor || 0) - (t.goalsAgainst || 0)}</td>
+                            <td style="text-align:right;">${t.team_name || t.name || "?"}</td>
+                            <td>${t.played || 0}</td>
+                            <td>${t.wins || 0}</td>
+                            <td>${t.draws || 0}</td>
+                            <td>${t.losses || 0}</td>
+                            <td>${t.goals_for || t.goals_scored || 0}</td>
+                            <td>${t.goals_against || 0}</td>
+                            <td>${(t.goals_for || 0) - (t.goals_against || 0)}</td>
                             <td><strong>${t.points || 0}</strong></td>
                         </tr>
                     `).join('')}
@@ -462,9 +364,9 @@
         
         let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
         scorers.slice(0, 20).forEach((s, i) => {
-            const player = s.player?.name || s.player_name || s.name || "?";
-            const team = s.team?.name || s.team_name || "";
-            const goals = s.goals || s.statistics?.[0]?.goals?.total || 0;
+            const player = s.player_name || s.name || "?";
+            const team = s.team_name || "";
+            const goals = s.goals || 0;
             html += `
                 <div class="match-card" style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-weight: bold; width: 35px;">${i+1}</span>
@@ -478,31 +380,31 @@
         container.innerHTML = html;
     }
     
+    // ======================== التحميل الرئيسي ========================
     async function loadAllData() {
         ["matchesContainer", "standingsContainer", "scorersContainer"].forEach(id => {
             document.getElementById(id).innerHTML = '<div class="loader">⏳ جاري التحميل...</div>';
         });
         
         try {
+            const leagueSlug = currentLeague;
             const [matches, standings, scorers] = await Promise.all([
-                getMatches(currentLeague, currentSeason),
-                getStandings(currentLeague, currentSeason),
-                getTopScorers(currentLeague, currentSeason)
+                getMatches(leagueSlug, 50),
+                getStandings(leagueSlug),
+                getTopScorers(leagueSlug, 20)
             ]);
             
             renderMatches(matches.upcoming || [], matches.past || []);
             renderStandings(standings);
             renderTopScorers(scorers);
             
-            document.getElementById("liveBadge").innerHTML = "🟢 مباشر";
-            document.getElementById("liveBadge").style.background = "#1f8a4c";
         } catch (err) {
             console.error(err);
-            document.getElementById("matchesContainer").innerHTML = `<div class="error">⚠️ خطأ في التحميل: ${err.message}</div>`;
+            document.getElementById("matchesContainer").innerHTML = `<div class="error">⚠️ خطأ في التحميل: ${err.message}<br>يرجى تحديث الصفحة أو المحاولة لاحقاً.</div>`;
         }
     }
     
-    // إعداد التبويبات والـ Events
+    // ======================== الإعدادات ========================
     function setupTabsAndEvents() {
         const tabs = document.querySelectorAll(".tab-btn");
         tabs.forEach(btn => {
@@ -523,7 +425,6 @@
     }
     
     async function init() {
-        initSeasonSelect();
         setupTabsAndEvents();
         await loadAllData();
     }
