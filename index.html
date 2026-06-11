@@ -60,7 +60,6 @@
         @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
         .logo h1 { font-size: 1.8rem; color: white; font-weight: 700; }
         
-        /* زر المطورين بدلاً من PRO */
         .dev-btn {
             background: rgba(255,255,255,0.2);
             border: none;
@@ -223,7 +222,7 @@
         .prediction-text { color: #2563eb; font-weight: bold; }
         .prediction-confidence { background: #e0f2fe; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; color: #0284c7; }
         
-        /* Modal - للمطورين */
+        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -270,35 +269,65 @@
             align-items: center;
             justify-content: center;
         }
-        .code-block {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 16px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            overflow-x: auto;
-            margin: 15px 0;
-            direction: ltr;
-            text-align: left;
+        
+        /* قائمة المباريات داخل المودال */
+        .matches-modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
         }
-        .info-text {
+        .modal-match-card {
             background: #f8fafc;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 10px 0;
-            font-size: 0.8rem;
-            border-right: 3px solid #2563eb;
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
         }
-        .copy-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 20px;
+        .modal-match-card:hover {
+            border-color: #2563eb;
+            background: white;
+        }
+        .modal-match-teams {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 2;
+        }
+        .modal-team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-team-flag {
+            font-size: 1.3rem;
+        }
+        .modal-team-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .modal-vs {
             font-size: 0.7rem;
-            cursor: pointer;
-            margin-top: 10px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .modal-match-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+        @media (max-width: 600px) {
+            .modal-match-card { flex-direction: column; text-align: center; }
+            .modal-match-teams { justify-content: center; }
+            .modal-match-details { justify-content: center; }
         }
         
         /* Stats Modal Tabs */
@@ -355,7 +384,39 @@
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .error { background: #fee2e2; color: #dc2626; padding: 20px; border-radius: 16px; text-align: center; }
         
-        /* ========== ADVERTISING SPACE - يظهر فقط عند وجود رابط حقيقي ========== */
+        /* Code block for dev modal */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            direction: ltr;
+            text-align: left;
+        }
+        .info-text {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            border-right: 3px solid #2563eb;
+        }
+        .copy-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* ========== ADVERTISING SPACE ========== */
         .promo-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border-radius: 20px;
@@ -503,7 +564,7 @@
     <div id="scorers" class="tab-content"><div id="scorersContainer"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الهدافين...</div></div></div>
     <div id="predictions" class="tab-content"><div id="predictionsContainer"><div class="loader"><i class="fas fa-robot"></i><br>جاري تحميل التوقعات...</div></div></div>
 
-    <!-- ADVERTISING SPACE - تظهر فقط عند إضافة رابط -->
+    <!-- ADVERTISING SPACE -->
     <div class="promo-container" id="promoContainer">
         <a href="#" target="_blank" class="promo-link" id="promoLink">
             <div class="promo-content">
@@ -527,6 +588,14 @@
             </div>
             <div id="statsCurrentTab" class="stats-tab-content active"><div id="statsModalBody"><div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل الإحصائيات...</div></div></div>
             <div id="statsHistoryTab" class="stats-tab-content"><div id="statsHistoryBody"><div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل تاريخ المواجهات...</div></div></div>
+        </div>
+    </div>
+
+    <!-- Modal للقوائم (المباريات، الفرق، المجموعات) -->
+    <div id="listModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="listModalTitle">العنوان</h3><button class="modal-close" onclick="closeListModal()">&times;</button></div>
+            <div id="listModalBody" class="matches-modal-list"></div>
         </div>
     </div>
 
@@ -559,7 +628,7 @@
                     widget.addEventListener('load', () => {
                         widget.contentWindow.postMessage({
                             type: 'CHANGE_LEAGUE',
-                            league: 'laliga' // premier-league, serie-a, bundesliga, worldcup
+                            league: 'laliga'
                         }, 'https://sam55na.github.io');
                     });
                 &lt;/script&gt;
@@ -578,23 +647,19 @@
 </div>
 
 <script>
-    // ======================== عداد الزوار الصغير ========================
+    // ======================== عداد الزوار ========================
     function updateVisitorCounter() {
         let count = localStorage.getItem('footballBotVisitors');
-        if (count === null) {
-            count = 1;
-        } else {
-            count = parseInt(count) + 1;
-        }
+        if (count === null) { count = 1; }
+        else { count = parseInt(count) + 1; }
         localStorage.setItem('footballBotVisitors', count);
         document.getElementById('visitorCount').innerText = count;
     }
     updateVisitorCounter();
-    // ================================================================
     
     // ======================== إعدادات الإعلان ========================
     const AD_CONFIG = {
-        url: "",        // اتركه فارغاً أو "#" لإخفاء الإعلان - ضع رابط حقيقي مثل "https://example.com" لإظهاره
+        url: "",
         icon: "fa-ad",
         title: "🚀 مساحة إعلانية مميزة",
         description: "تواصل معنا لوضع إعلانك هنا والوصول إلى آلاف المهتمين بكرة القدم",
@@ -625,14 +690,48 @@
     }
     document.addEventListener('DOMContentLoaded', initAd);
     
-    // ======================== Modal للمطورين ========================
-    function openDevModal() {
-        document.getElementById('devModal').classList.add('active');
+    // ======================== Modal Functions ========================
+    function openListModal(title, items) {
+        const modal = document.getElementById('listModal');
+        const modalTitle = document.getElementById('listModalTitle');
+        const modalBody = document.getElementById('listModalBody');
+        
+        modalTitle.innerText = title;
+        modalBody.innerHTML = "";
+        
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'modal-match-card';
+            div.innerHTML = `
+                <div class="modal-match-teams">
+                    <div class="modal-team">
+                        <span class="modal-team-flag">${item.flag1 || "🏆"}</span>
+                        <span class="modal-team-name">${item.team1}</span>
+                    </div>
+                    <span class="modal-vs">🆚</span>
+                    <div class="modal-team">
+                        <span class="modal-team-flag">${item.flag2 || "🏆"}</span>
+                        <span class="modal-team-name">${item.team2}</span>
+                    </div>
+                </div>
+                <div class="modal-match-details">
+                    <span><i class="fas fa-calendar"></i> ${item.date}</span>
+                    <span><i class="fas fa-clock"></i> ${item.time}</span>
+                    <span><i class="fas fa-map-marker-alt"></i> ${item.venue}</span>
+                </div>
+            `;
+            modalBody.appendChild(div);
+        });
+        
+        modal.classList.add('active');
     }
     
-    function closeDevModal() {
-        document.getElementById('devModal').classList.remove('active');
+    function closeListModal() {
+        document.getElementById('listModal').classList.remove('active');
     }
+    
+    function openDevModal() { document.getElementById('devModal').classList.add('active'); }
+    function closeDevModal() { document.getElementById('devModal').classList.remove('active'); }
     
     function copyToClipboard(type) {
         let text = '';
@@ -651,7 +750,6 @@
         alert('تم نسخ الكود! يمكنك لصقه في موقعك.');
     }
     
-    // زر المطورين
     document.getElementById('devBtn').addEventListener('click', openDevModal);
     
     // ======================== Flags Database ========================
@@ -684,7 +782,6 @@
     let currentLeague = "worldcup";
     let worldCupData = null;
     
-    // تعريب أسماء الإحصائيات
     const statNames = {
         "shots_on_goal": "تسديدات على المرمى", "shots_off_goal": "تسديدات خارج المرمى",
         "total_shots": "إجمالي التسديدات", "blocked_shots": "تسديدات محجوبة",
@@ -695,7 +792,7 @@
         "goals": "الأهداف"
     };
     
-    // ======================== جلب الإحصائيات الحديثة ========================
+    // ======================== جلب الإحصائيات ========================
     async function fetchMatchStats(homeTeam, awayTeam, matchDate) {
         try {
             const searchUrl = `${SPORTMONKS_API}/fixtures/between/${matchDate}/${matchDate}?api_token=${SPORTMONKS_TOKEN}&include=localTeam,visitorTeam,stats,participants`;
@@ -942,7 +1039,7 @@
         let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
         let rank = 1;
         for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
-        html += '</tbody><table></div>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
     }
     
@@ -986,28 +1083,80 @@
         document.querySelectorAll(".stat-card").forEach(card => {
             card.addEventListener("click", () => {
                 const type = card.getAttribute("data-type");
-                let title = "", items = [];
-                if (type === "matches" && worldCupData?.matches) { title = "جميع المباريات"; items = worldCupData.matches.map(m => ({ name: `${m.team1} 🆚 ${m.team2}`, detail: `${m.date} | ${m.time || "TBD"}`, flag: "" })); showModal(title, items); }
-                else if (type === "today" && worldCupData?.matches) { const today = new Date().toISOString().split('T')[0]; const todayMatches = worldCupData.matches.filter(m => m.date === today); title = "مباريات اليوم"; items = todayMatches.map(m => ({ name: `${m.team1} 🆚 ${m.team2}`, detail: `${m.time || "TBD"} | ${m.ground || "TBD"}`, flag: "" })); if(items.length===0) items=[{name:"لا توجد مباريات اليوم",detail:"",flag:"📭"}]; showModal(title, items); }
-                else if (type === "teams" && worldCupData?.matches) { const teamsSet = new Set(); worldCupData.matches.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); }); title = "قائمة المنتخبات"; items = Array.from(teamsSet).map(team => ({ name: team, detail: "منتخب مشارك", flag: getFlag(team) })); showModal(title, items); }
-                else if (type === "groups" && worldCupData?.matches) { const groupsSet = new Set(); worldCupData.matches.forEach(m => { if (m.group) groupsSet.add(m.group); }); title = "المجموعات"; items = Array.from(groupsSet).map(group => ({ name: `المجموعة ${group}`, detail: "", flag: "🏆" })); showModal(title, items); }
+                
+                if (type === "matches" && worldCupData?.matches) {
+                    const items = worldCupData.matches.map(m => ({
+                        team1: m.team1,
+                        team2: m.team2,
+                        flag1: getFlag(m.team1),
+                        flag2: getFlag(m.team2),
+                        date: m.date,
+                        time: m.time || "TBD",
+                        venue: m.ground || "TBD"
+                    }));
+                    openListModal("جميع المباريات", items);
+                }
+                else if (type === "today" && worldCupData?.matches) {
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayMatches = worldCupData.matches.filter(m => m.date === today);
+                    const items = todayMatches.map(m => ({
+                        team1: m.team1,
+                        team2: m.team2,
+                        flag1: getFlag(m.team1),
+                        flag2: getFlag(m.team2),
+                        date: m.date,
+                        time: m.time || "TBD",
+                        venue: m.ground || "TBD"
+                    }));
+                    if (items.length === 0) {
+                        alert("لا توجد مباريات اليوم");
+                        return;
+                    }
+                    openListModal(`مباريات اليوم (${today})`, items);
+                }
+                else if (type === "teams" && worldCupData?.matches) {
+                    const teamsSet = new Set();
+                    worldCupData.matches.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); });
+                    const items = Array.from(teamsSet).map(team => ({
+                        team1: team,
+                        team2: "",
+                        flag1: getFlag(team),
+                        flag2: "",
+                        date: "",
+                        time: "",
+                        venue: "منتخب مشارك في كأس العالم 2026"
+                    }));
+                    openListModal("قائمة المنتخبات", items);
+                }
+                else if (type === "groups" && worldCupData?.matches) {
+                    const groupsSet = new Set();
+                    worldCupData.matches.forEach(m => { if (m.group) groupsSet.add(m.group); });
+                    const items = Array.from(groupsSet).map(group => {
+                        const teamsInGroup = [];
+                        worldCupData.matches.forEach(m => {
+                            if (m.group === group) {
+                                teamsInGroup.push(m.team1);
+                                teamsInGroup.push(m.team2);
+                            }
+                        });
+                        const uniqueTeams = [...new Set(teamsInGroup)];
+                        return {
+                            team1: `المجموعة ${group}`,
+                            team2: "",
+                            flag1: "🏆",
+                            flag2: "",
+                            date: "",
+                            time: "",
+                            venue: `الفرق: ${uniqueTeams.map(t => `${getFlag(t)} ${t}`).join(", ")}`
+                        };
+                    });
+                    openListModal("المجموعات", items);
+                }
             });
         });
     }
     
-    function showModal(title, items) {
-        const modal = document.getElementById("modal");
-        const modalTitle = document.getElementById("modalTitle");
-        const modalBody = document.getElementById("modalBody");
-        if (!modalTitle || !modalBody) { alert("البيانات: " + items.map(i=>i.name).join(", ")); return; }
-        modalTitle.innerText = title; modalBody.innerHTML = "";
-        items.forEach(item => { const div = document.createElement("div"); div.className = "modal-item"; div.style.cssText = "background:#f8fafc;padding:12px;border-radius:15px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;margin-bottom:8px;"; div.innerHTML = `<div style="font-size:1.5rem;">${item.flag || "🏆"}</div><div><div style="font-weight:bold;">${item.name}</div><div style="font-size:0.7rem;color:#64748b;">${item.detail || ""}</div></div>`; modalBody.appendChild(div); });
-        modal.classList.add("active");
-    }
-    
-    function closeModal() { document.getElementById("modal").classList.remove("active"); }
-    
-    // ======================== Embed Widget - جعل الموقع قابلاً للتضمين ========================
+    // ======================== Embed Widget ========================
     (function() {
         if (window.self !== window.top) {
             const container = document.querySelector('.container');
@@ -1038,14 +1187,13 @@
             }
         });
     })();
-    // ============================================================================
     
     async function init() {
         setupTabsAndEvents();
         await fetchWorldCupData();
         await loadAllData();
         window.onclick = function(event) { 
-            if (event.target === document.getElementById("modal")) closeModal(); 
+            if (event.target === document.getElementById("listModal")) closeListModal();
             if (event.target === document.getElementById("statsModal")) closeStatsModal();
             if (event.target === document.getElementById("devModal")) closeDevModal();
         };
