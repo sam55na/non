@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Football BOT | إحصائيات حقيقية</title>
+    <title>Football BOT | إحصائيات حية ومباشرة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -259,14 +259,47 @@
         .stat-name { color: #64748b; }
         .stat-value { font-weight: bold; color: #1e293b; }
         
-        .history-card {
+        .history-card, .form-card {
             background: #f8fafc;
             border-radius: 14px;
             padding: 12px;
             margin-bottom: 12px;
         }
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 0.7rem; }
+        .history-header, .form-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 0.7rem; }
         .history-result { color: #2563eb; }
+        .team-form {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .form-result {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: bold;
+        }
+        .form-win { background: #10b981; color: white; }
+        .form-draw { background: #f59e0b; color: white; }
+        .form-loss { background: #ef4444; color: white; }
+        
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse-green 1s infinite;
+        }
+        @keyframes pulse-green {
+            0%,100%{opacity:1;} 50%{opacity:0.3;}
+        }
         
         .promo-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
@@ -341,7 +374,7 @@
         <div class="tagline">
             <span><i class="fas fa-trophy"></i> كأس العالم 2026</span>
             <span><i class="fas fa-futbol"></i> جميع البطولات</span>
-            <span><i class="fas fa-chart-line"></i> إحصائيات حقيقية</span>
+            <span><i class="fas fa-chart-line"></i> تحديث مباشر 10 ثواني</span>
         </div>
     </div>
 
@@ -389,13 +422,21 @@
 
     <div id="statsModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h3 id="statsModalTitle">إحصائيات المباراة</h3><button class="modal-close" onclick="closeStatsModal()">&times;</button></div>
+            <div class="modal-header">
+                <h3 id="statsModalTitle">إحصائيات المباراة</h3>
+                <button class="modal-close" onclick="closeStatsModal()">&times;</button>
+            </div>
+            <div style="font-size:0.65rem; color:#64748b; margin-bottom:10px; text-align:left; direction:ltr;">
+                <span class="refresh-indicator"></span> يتم تحديث الإحصائيات تلقائياً كل 10 ثواني
+            </div>
             <div class="stats-tabs">
                 <button class="stats-tab-btn active" data-stat-tab="current">📊 إحصائيات المباراة</button>
                 <button class="stats-tab-btn" data-stat-tab="history">📜 تاريخ المواجهات</button>
+                <button class="stats-tab-btn" data-stat-tab="form">📈 أداء الفريقين</button>
             </div>
             <div id="statsCurrentTab" class="stats-tab-content active"><div id="statsModalBody"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الإحصائيات...</div></div></div>
             <div id="statsHistoryTab" class="stats-tab-content"><div id="statsHistoryBody"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div></div></div>
+            <div id="statsFormTab" class="stats-tab-content"><div id="statsFormBody"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل أداء الفريقين...</div></div></div>
         </div>
     </div>
 
@@ -416,7 +457,7 @@
     </div>
 
     <footer>
-        <i class="fas fa-futbol"></i> إحصائيات حقيقية محدثة تلقائياً
+        <i class="fas fa-sync-alt"></i> تحديث تلقائي للإحصائيات كل 10 ثواني
     </footer>
 </div>
 
@@ -540,90 +581,106 @@
         }
     }
     
-    // ======================== عرض الإحصائيات ========================
+    // ======================== أداء الفريق (آخر 5 مباريات) ========================
+    async function fetchTeamForm(teamName) {
+        try {
+            const response = await fetch(`${SPORTSCORE_API}/team-form/football/${encodeURIComponent(teamName)}`);
+            if (!response.ok) throw new Error("فشل تحميل أداء الفريق");
+            const data = await response.json();
+            return data.matches || [];
+        } catch (error) {
+            console.error("Error fetching team form:", error);
+            return [];
+        }
+    }
+    
+    // متغيرات لتخزين معرف المباراة الحالية والتحديث التلقائي
+    let currentMatchId = null;
+    let autoRefreshInterval = null;
+    let isModalOpen = false;
+    
+    // ======================== عرض الإحصائيات مع تحديث تلقائي ========================
     async function showMatchStats(matchId, homeTeam, awayTeam, matchDate, isFinished) {
+        // إيقاف التحديث السابق إذا كان موجوداً
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+        
+        currentMatchId = matchId;
         const modal = document.getElementById("statsModal");
         document.getElementById("statsModalTitle").innerHTML = `<i class="fas fa-chart-bar"></i> ${homeTeam} 🆚 ${awayTeam}`;
         modal.classList.add("active");
+        isModalOpen = true;
         
-        if (!isFinished) {
-            document.getElementById("statsModalBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">⏳ المباراة لم تبدأ بعد<br>الإحصائيات ستظهر فور انطلاق المباراة</div>`;
-            document.getElementById("statsHistoryBody").innerHTML = `<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div>`;
+        // دالة تحميل البيانات
+        async function loadStats() {
+            if (!currentMatchId) return;
             
-            const history = await fetchHeadToHead(homeTeam, awayTeam);
-            if (history && history.length > 0) {
-                let historyHtml = '';
-                history.slice(0, 5).forEach(m => {
-                    historyHtml += `<div class="history-card">
-                        <div class="history-header"><span>${m.date || "تاريخ غير محدد"}</span><span class="history-result">${m.home_score} - ${m.away_score}</span></div>
-                        <div>${m.home_team} 🆚 ${m.away_team}</div>
-                    </div>`;
+            // تحديث مؤشر التحديث
+            const refreshIndicator = document.querySelector('.refresh-indicator');
+            if (refreshIndicator) refreshIndicator.style.background = "#f59e0b";
+            
+            // تحميل الإحصائيات
+            const stats = await fetchMatchStats(currentMatchId);
+            
+            if (stats && stats.stats) {
+                const statOrder = ["goals", "shots_on_goal", "shots_off_goal", "corner_kicks", "dangerous_attacks", "ball_possession", "passes_accurate", "fouls", "yellow_cards", "red_cards", "goalkeeper_saves"];
+                const statNamesAr = {
+                    "goals": "الأهداف", "shots_on_goal": "تسديدات على المرمى", "shots_off_goal": "تسديدات خارج المرمى",
+                    "corner_kicks": "الركنيات", "dangerous_attacks": "الهجمات الخطيرة", "ball_possession": "الاستحواذ",
+                    "passes_accurate": "تمريرات ناجحة", "fouls": "الأخطاء", "yellow_cards": "بطاقات صفراء",
+                    "red_cards": "بطاقات حمراء", "goalkeeper_saves": "تصديات الحارس"
+                };
+                
+                const homeStats = {};
+                const awayStats = {};
+                
+                if (stats.stats.home) {
+                    Object.keys(stats.stats.home).forEach(key => {
+                        if (statNamesAr[key]) {
+                            let value = stats.stats.home[key];
+                            if (key === "ball_possession") value = `${value}%`;
+                            homeStats[statNamesAr[key]] = value;
+                        }
+                    });
+                }
+                
+                if (stats.stats.away) {
+                    Object.keys(stats.stats.away).forEach(key => {
+                        if (statNamesAr[key]) {
+                            let value = stats.stats.away[key];
+                            if (key === "ball_possession") value = `${value}%`;
+                            awayStats[statNamesAr[key]] = value;
+                        }
+                    });
+                }
+                
+                let statsHtml = `<div class="stats-grid-modal">
+                    <div class="team-stats-box"><h4>${getFlag(homeTeam)} ${homeTeam}</h4>`;
+                statOrder.forEach(stat => {
+                    const statAr = statNamesAr[stat];
+                    if (homeStats[statAr] !== undefined) {
+                        statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${homeStats[statAr]}</span></div>`;
+                    }
                 });
-                document.getElementById("statsHistoryBody").innerHTML = historyHtml;
+                statsHtml += `</div><div class="team-stats-box"><h4>${getFlag(awayTeam)} ${awayTeam}</h4>`;
+                statOrder.forEach(stat => {
+                    const statAr = statNamesAr[stat];
+                    if (awayStats[statAr] !== undefined) {
+                        statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${awayStats[statAr]}</span></div>`;
+                    }
+                });
+                statsHtml += `</div></div>`;
+                document.getElementById("statsModalBody").innerHTML = statsHtml;
             } else {
-                document.getElementById("statsHistoryBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">لا توجد مواجهات سابقة بين الفريقين</div>`;
+                document.getElementById("statsModalBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">⚠️ لا توجد إحصائيات متاحة لهذه المباراة</div>`;
             }
-            return;
+            
+            if (refreshIndicator) refreshIndicator.style.background = "#10b981";
         }
         
-        document.getElementById("statsModalBody").innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الإحصائيات...</div>';
-        document.getElementById("statsHistoryBody").innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div>';
-        
-        const stats = await fetchMatchStats(matchId);
-        
-        if (stats && stats.stats) {
-            const statOrder = ["goals", "shots_on_goal", "shots_off_goal", "corner_kicks", "dangerous_attacks", "ball_possession", "passes_accurate", "fouls", "yellow_cards", "red_cards", "goalkeeper_saves"];
-            const statNamesAr = {
-                "goals": "الأهداف", "shots_on_goal": "تسديدات على المرمى", "shots_off_goal": "تسديدات خارج المرمى",
-                "corner_kicks": "الركنيات", "dangerous_attacks": "الهجمات الخطيرة", "ball_possession": "الاستحواذ",
-                "passes_accurate": "تمريرات ناجحة", "fouls": "الأخطاء", "yellow_cards": "بطاقات صفراء",
-                "red_cards": "بطاقات حمراء", "goalkeeper_saves": "تصديات الحارس"
-            };
-            
-            const homeStats = {};
-            const awayStats = {};
-            
-            if (stats.stats.home) {
-                Object.keys(stats.stats.home).forEach(key => {
-                    if (statNamesAr[key]) {
-                        let value = stats.stats.home[key];
-                        if (key === "ball_possession") value = `${value}%`;
-                        homeStats[statNamesAr[key]] = value;
-                    }
-                });
-            }
-            
-            if (stats.stats.away) {
-                Object.keys(stats.stats.away).forEach(key => {
-                    if (statNamesAr[key]) {
-                        let value = stats.stats.away[key];
-                        if (key === "ball_possession") value = `${value}%`;
-                        awayStats[statNamesAr[key]] = value;
-                    }
-                });
-            }
-            
-            let statsHtml = `<div class="stats-grid-modal">
-                <div class="team-stats-box"><h4>${getFlag(homeTeam)} ${homeTeam}</h4>`;
-            statOrder.forEach(stat => {
-                const statAr = statNamesAr[stat];
-                if (homeStats[statAr] !== undefined) {
-                    statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${homeStats[statAr]}</span></div>`;
-                }
-            });
-            statsHtml += `</div><div class="team-stats-box"><h4>${getFlag(awayTeam)} ${awayTeam}</h4>`;
-            statOrder.forEach(stat => {
-                const statAr = statNamesAr[stat];
-                if (awayStats[statAr] !== undefined) {
-                    statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${awayStats[statAr]}</span></div>`;
-                }
-            });
-            statsHtml += `</div></div>`;
-            document.getElementById("statsModalBody").innerHTML = statsHtml;
-        } else {
-            document.getElementById("statsModalBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">⚠️ لا توجد إحصائيات متاحة لهذه المباراة</div>`;
-        }
-        
+        // تحميل تاريخ المواجهات
         const history = await fetchHeadToHead(homeTeam, awayTeam);
         if (history && history.length > 0) {
             let historyHtml = '';
@@ -637,9 +694,56 @@
         } else {
             document.getElementById("statsHistoryBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">لا توجد مواجهات سابقة بين الفريقين</div>`;
         }
+        
+        // تحميل أداء الفريقين (آخر 5 مباريات لكل فريق)
+        const [homeForm, awayForm] = await Promise.all([
+            fetchTeamForm(homeTeam),
+            fetchTeamForm(awayTeam)
+        ]);
+        
+        function generateFormHtml(teamName, formData) {
+            let html = `<div class="form-card"><div class="form-header">${getFlag(teamName)} ${teamName} - آخر 5 مباريات</div><div class="team-form">`;
+            formData.slice(0, 5).forEach(m => {
+                const isWin = (m.home_team === teamName && m.home_score > m.away_score) || (m.away_team === teamName && m.away_score > m.home_score);
+                const isDraw = m.home_score === m.away_score;
+                let resultClass = "form-loss";
+                let resultText = "خ";
+                if (isWin) { resultClass = "form-win"; resultText = "ف"; }
+                else if (isDraw) { resultClass = "form-draw"; resultText = "ت"; }
+                html += `<div class="form-result ${resultClass}">${resultText}</div>`;
+            });
+            html += `</div><div style="margin-top:6px; font-size:0.6rem; color:#64748b;">${formData.slice(0,5).map(m => `${m.home_team} ${m.home_score}-${m.away_score} ${m.away_team}`).join(" | ")}</div></div>`;
+            return html;
+        }
+        
+        let formHtml = `<div class="stats-grid-modal">
+            <div>${generateFormHtml(homeTeam, homeForm)}</div>
+            <div>${generateFormHtml(awayTeam, awayForm)}</div>
+        </div>`;
+        document.getElementById("statsFormBody").innerHTML = formHtml;
+        
+        // تحميل الإحصائيات لأول مرة
+        await loadStats();
+        
+        // إذا كانت المباراة منتهية أو حية، نبدأ التحديث التلقائي كل 10 ثواني
+        if (isFinished) {
+            autoRefreshInterval = setInterval(async () => {
+                if (isModalOpen && currentMatchId) {
+                    await loadStats();
+                }
+            }, 10000);
+        }
     }
     
-    function closeStatsModal() { document.getElementById('statsModal').classList.remove('active'); }
+    function closeStatsModal() {
+        isModalOpen = false;
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+        currentMatchId = null;
+        document.getElementById('statsModal').classList.remove('active');
+    }
     
     // ======================== عرض المباريات ========================
     async function renderMatches() {
@@ -712,6 +816,7 @@
     
     function generateWorldCupCard(match, isToday) {
         const isPast = match.date < new Date().toISOString().split('T')[0];
+        const matchId = match.id || Math.random() * 10000;
         return `<div class="match-card">
             <div class="match-teams">
                 <div class="team"><div class="team-flag">${getFlag(match.team1)}</div><div class="team-name">${match.team1}</div></div>
@@ -723,7 +828,7 @@
                 <span><i class="fas fa-clock"></i> ${match.time || "TBD"}</span>
                 <span><i class="fas fa-map-marker-alt"></i> ${match.ground || "TBD"}</span>
                 ${match.group ? `<span><i class="fas fa-layer-group"></i> ${match.group}</span>` : ''}
-                <button class="stats-btn" onclick="showMatchStats(${match.id || 0}, '${match.team1.replace(/'/g, "\\'")}', '${match.team2.replace(/'/g, "\\'")}', '${match.date}', ${isPast})"><i class="fas fa-chart-line"></i> إحصائيات</button>
+                <button class="stats-btn" onclick="showMatchStats(${matchId}, '${match.team1.replace(/'/g, "\\'")}', '${match.team2.replace(/'/g, "\\'")}', '${match.date}', ${isPast})"><i class="fas fa-chart-line"></i> إحصائيات</button>
             </div>
         </div>`;
     }
@@ -768,7 +873,7 @@
             const standings = data.standings || [];
             
             if (standings && standings.length > 0) {
-                let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></tr></thead><tbody>';
+                let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></table></thead><tbody>';
                 standings.slice(0, 15).forEach((team, idx) => {
                     html += `<tr>
                         <td>${idx + 1}</td>
