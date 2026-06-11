@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Football BOT | منصة كرة القدم الشاملة</title>
+    <title>Football BOT | إحصائيات حقيقية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -222,6 +222,52 @@
             border-radius: 50%;
         }
         
+        .stats-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .stats-tab-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 30px;
+        }
+        .stats-tab-btn.active { background: #2563eb; color: white; }
+        .stats-tab-content { display: none; }
+        .stats-tab-content.active { display: block; }
+        
+        .stats-grid-modal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .team-stats-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px;
+        }
+        .team-stats-box h4 { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; font-size: 0.8rem; }
+        .stat-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.7rem; }
+        .stat-name { color: #64748b; }
+        .stat-value { font-weight: bold; color: #1e293b; }
+        
+        .history-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .history-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 0.7rem; }
+        .history-result { color: #2563eb; }
+        
         .promo-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border-radius: 16px;
@@ -272,6 +318,7 @@
             .container { padding: 10px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .matches-grid { grid-template-columns: 1fr; }
+            .stats-grid-modal { grid-template-columns: 1fr; }
             .team-flag { width: 35px; height: 35px; font-size: 1.4rem; }
         }
         @media (max-width: 480px) {
@@ -294,7 +341,7 @@
         <div class="tagline">
             <span><i class="fas fa-trophy"></i> كأس العالم 2026</span>
             <span><i class="fas fa-futbol"></i> جميع البطولات</span>
-            <span><i class="fas fa-chart-line"></i> نتائج حية</span>
+            <span><i class="fas fa-chart-line"></i> إحصائيات حقيقية</span>
         </div>
     </div>
 
@@ -340,6 +387,18 @@
         </a>
     </div>
 
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="statsModalTitle">إحصائيات المباراة</h3><button class="modal-close" onclick="closeStatsModal()">&times;</button></div>
+            <div class="stats-tabs">
+                <button class="stats-tab-btn active" data-stat-tab="current">📊 إحصائيات المباراة</button>
+                <button class="stats-tab-btn" data-stat-tab="history">📜 تاريخ المواجهات</button>
+            </div>
+            <div id="statsCurrentTab" class="stats-tab-content active"><div id="statsModalBody"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الإحصائيات...</div></div></div>
+            <div id="statsHistoryTab" class="stats-tab-content"><div id="statsHistoryBody"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div></div></div>
+        </div>
+    </div>
+
     <div id="listModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h3 id="listModalTitle">العنوان</h3><button class="modal-close" onclick="closeListModal()">&times;</button></div>
@@ -357,7 +416,7 @@
     </div>
 
     <footer>
-        <i class="fas fa-futbol"></i> جميع البيانات محدثة تلقائياً
+        <i class="fas fa-futbol"></i> إحصائيات حقيقية محدثة تلقائياً
     </footer>
 </div>
 
@@ -412,6 +471,7 @@
     
     let worldCupMatches = [];
     let currentLeague = "worldcup";
+    let currentMatchesData = { upcoming: [], past: [], all: [] };
     
     async function fetchWorldCupData() {
         try {
@@ -454,29 +514,132 @@
         }
     }
     
-    async function fetchStandings(leagueSlug) {
+    // ======================== الإحصائيات من SportScore API ========================
+    async function fetchMatchStats(matchId) {
         try {
-            const response = await fetch(`${SPORTSCORE_API}/standings/football/${leagueSlug}`);
-            if (!response.ok) throw new Error("فشل تحميل الترتيب");
+            const response = await fetch(`${SPORTSCORE_API}/matches/football/${matchId}`);
+            if (!response.ok) throw new Error("فشل تحميل الإحصائيات");
             const data = await response.json();
-            return data.standings || [];
+            return data;
         } catch (error) {
-            console.error("Error fetching standings:", error);
+            console.error("Error fetching match stats:", error);
+            return null;
+        }
+    }
+    
+    // ======================== تاريخ المواجهات ========================
+    async function fetchHeadToHead(team1, team2) {
+        try {
+            const response = await fetch(`${SPORTSCORE_API}/head-to-head/football/${encodeURIComponent(team1)}/${encodeURIComponent(team2)}`);
+            if (!response.ok) throw new Error("فشل تحميل تاريخ المواجهات");
+            const data = await response.json();
+            return data.matches || [];
+        } catch (error) {
+            console.error("Error fetching head to head:", error);
             return [];
         }
     }
     
-    async function fetchScorers(leagueSlug) {
-        try {
-            const response = await fetch(`${SPORTSCORE_API}/top-scorers/football/${leagueSlug}?limit=20`);
-            if (!response.ok) throw new Error("فشل تحميل الهدافين");
-            const data = await response.json();
-            return data.scorers || [];
-        } catch (error) {
-            console.error("Error fetching scorers:", error);
-            return [];
+    // ======================== عرض الإحصائيات ========================
+    async function showMatchStats(matchId, homeTeam, awayTeam, matchDate, isFinished) {
+        const modal = document.getElementById("statsModal");
+        document.getElementById("statsModalTitle").innerHTML = `<i class="fas fa-chart-bar"></i> ${homeTeam} 🆚 ${awayTeam}`;
+        modal.classList.add("active");
+        
+        if (!isFinished) {
+            document.getElementById("statsModalBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">⏳ المباراة لم تبدأ بعد<br>الإحصائيات ستظهر فور انطلاق المباراة</div>`;
+            document.getElementById("statsHistoryBody").innerHTML = `<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div>`;
+            
+            const history = await fetchHeadToHead(homeTeam, awayTeam);
+            if (history && history.length > 0) {
+                let historyHtml = '';
+                history.slice(0, 5).forEach(m => {
+                    historyHtml += `<div class="history-card">
+                        <div class="history-header"><span>${m.date || "تاريخ غير محدد"}</span><span class="history-result">${m.home_score} - ${m.away_score}</span></div>
+                        <div>${m.home_team} 🆚 ${m.away_team}</div>
+                    </div>`;
+                });
+                document.getElementById("statsHistoryBody").innerHTML = historyHtml;
+            } else {
+                document.getElementById("statsHistoryBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">لا توجد مواجهات سابقة بين الفريقين</div>`;
+            }
+            return;
+        }
+        
+        document.getElementById("statsModalBody").innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الإحصائيات...</div>';
+        document.getElementById("statsHistoryBody").innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل تاريخ المواجهات...</div>';
+        
+        const stats = await fetchMatchStats(matchId);
+        
+        if (stats && stats.stats) {
+            const statOrder = ["goals", "shots_on_goal", "shots_off_goal", "corner_kicks", "dangerous_attacks", "ball_possession", "passes_accurate", "fouls", "yellow_cards", "red_cards", "goalkeeper_saves"];
+            const statNamesAr = {
+                "goals": "الأهداف", "shots_on_goal": "تسديدات على المرمى", "shots_off_goal": "تسديدات خارج المرمى",
+                "corner_kicks": "الركنيات", "dangerous_attacks": "الهجمات الخطيرة", "ball_possession": "الاستحواذ",
+                "passes_accurate": "تمريرات ناجحة", "fouls": "الأخطاء", "yellow_cards": "بطاقات صفراء",
+                "red_cards": "بطاقات حمراء", "goalkeeper_saves": "تصديات الحارس"
+            };
+            
+            const homeStats = {};
+            const awayStats = {};
+            
+            if (stats.stats.home) {
+                Object.keys(stats.stats.home).forEach(key => {
+                    if (statNamesAr[key]) {
+                        let value = stats.stats.home[key];
+                        if (key === "ball_possession") value = `${value}%`;
+                        homeStats[statNamesAr[key]] = value;
+                    }
+                });
+            }
+            
+            if (stats.stats.away) {
+                Object.keys(stats.stats.away).forEach(key => {
+                    if (statNamesAr[key]) {
+                        let value = stats.stats.away[key];
+                        if (key === "ball_possession") value = `${value}%`;
+                        awayStats[statNamesAr[key]] = value;
+                    }
+                });
+            }
+            
+            let statsHtml = `<div class="stats-grid-modal">
+                <div class="team-stats-box"><h4>${getFlag(homeTeam)} ${homeTeam}</h4>`;
+            statOrder.forEach(stat => {
+                const statAr = statNamesAr[stat];
+                if (homeStats[statAr] !== undefined) {
+                    statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${homeStats[statAr]}</span></div>`;
+                }
+            });
+            statsHtml += `</div><div class="team-stats-box"><h4>${getFlag(awayTeam)} ${awayTeam}</h4>`;
+            statOrder.forEach(stat => {
+                const statAr = statNamesAr[stat];
+                if (awayStats[statAr] !== undefined) {
+                    statsHtml += `<div class="stat-row"><span class="stat-name">${statAr}</span><span class="stat-value">${awayStats[statAr]}</span></div>`;
+                }
+            });
+            statsHtml += `</div></div>`;
+            document.getElementById("statsModalBody").innerHTML = statsHtml;
+        } else {
+            document.getElementById("statsModalBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">⚠️ لا توجد إحصائيات متاحة لهذه المباراة</div>`;
+        }
+        
+        const history = await fetchHeadToHead(homeTeam, awayTeam);
+        if (history && history.length > 0) {
+            let historyHtml = '';
+            history.slice(0, 5).forEach(m => {
+                historyHtml += `<div class="history-card">
+                    <div class="history-header"><span>${m.date || "تاريخ غير محدد"}</span><span class="history-result">${m.home_score} - ${m.away_score}</span></div>
+                    <div>${m.home_team} 🆚 ${m.away_team}</div>
+                </div>`;
+            });
+            document.getElementById("statsHistoryBody").innerHTML = historyHtml;
+        } else {
+            document.getElementById("statsHistoryBody").innerHTML = `<div class="error" style="text-align:center;padding:30px;">لا توجد مواجهات سابقة بين الفريقين</div>`;
         }
     }
+    
+    function closeStatsModal() { document.getElementById('statsModal').classList.remove('active'); }
     
     // ======================== عرض المباريات ========================
     async function renderMatches() {
@@ -493,13 +656,13 @@
             
             if (todayMatches.length > 0) {
                 html += `<div class="section-title"><i class="fas fa-clock"></i><h3>⚡ مباريات اليوم (${today})</h3></div><div class="matches-grid">`;
-                todayMatches.forEach(m => { html += generateWorldCupCard(m); });
+                todayMatches.forEach(m => { html += generateWorldCupCard(m, true); });
                 html += `</div>`;
             }
             
             if (upcomingMatches.length > 0) {
                 html += `<div class="section-title"><i class="fas fa-calendar-week"></i><h3>📅 المباريات القادمة</h3></div><div class="matches-grid">`;
-                upcomingMatches.slice(0, 12).forEach(m => { html += generateWorldCupCard(m); });
+                upcomingMatches.slice(0, 12).forEach(m => { html += generateWorldCupCard(m, false); });
                 html += `</div>`;
             }
             
@@ -511,6 +674,7 @@
             container.innerHTML = html || '<div class="error">📭 لا توجد مباريات لعرضها</div>';
         } else {
             const leagueData = await fetchLeagueMatches(currentLeague);
+            currentMatchesData = leagueData;
             const today = new Date().toISOString().split('T')[0];
             const todayMatches = leagueData.upcoming.filter(m => m.start_time?.split('T')[0] === today);
             
@@ -518,7 +682,7 @@
             
             if (todayMatches.length > 0) {
                 html += `<div class="section-title"><i class="fas fa-clock"></i><h3>⚡ مباريات اليوم (${today})</h3></div><div class="matches-grid">`;
-                todayMatches.forEach(m => { html += generateLeagueCard(m); });
+                todayMatches.forEach(m => { html += generateLeagueCard(m, false); });
                 html += `</div>`;
             }
             
@@ -526,9 +690,15 @@
                 const otherMatches = leagueData.upcoming.filter(m => m.start_time?.split('T')[0] !== today);
                 if (otherMatches.length > 0) {
                     html += `<div class="section-title"><i class="fas fa-calendar-week"></i><h3>📅 المباريات القادمة</h3></div><div class="matches-grid">`;
-                    otherMatches.slice(0, 12).forEach(m => { html += generateLeagueCard(m); });
+                    otherMatches.slice(0, 12).forEach(m => { html += generateLeagueCard(m, false); });
                     html += `</div>`;
                 }
+            }
+            
+            if (leagueData.past && leagueData.past.length > 0) {
+                html += `<div class="section-title"><i class="fas fa-history"></i><h3>📋 النتائج السابقة</h3></div><div class="matches-grid">`;
+                leagueData.past.slice(0, 10).forEach(m => { html += generateLeagueCard(m, true); });
+                html += `</div>`;
             }
             
             document.getElementById("totalMatches").innerText = leagueData.all.length;
@@ -540,7 +710,8 @@
         }
     }
     
-    function generateWorldCupCard(match) {
+    function generateWorldCupCard(match, isToday) {
+        const isPast = match.date < new Date().toISOString().split('T')[0];
         return `<div class="match-card">
             <div class="match-teams">
                 <div class="team"><div class="team-flag">${getFlag(match.team1)}</div><div class="team-name">${match.team1}</div></div>
@@ -552,16 +723,17 @@
                 <span><i class="fas fa-clock"></i> ${match.time || "TBD"}</span>
                 <span><i class="fas fa-map-marker-alt"></i> ${match.ground || "TBD"}</span>
                 ${match.group ? `<span><i class="fas fa-layer-group"></i> ${match.group}</span>` : ''}
+                <button class="stats-btn" onclick="showMatchStats(${match.id || 0}, '${match.team1.replace(/'/g, "\\'")}', '${match.team2.replace(/'/g, "\\'")}', '${match.date}', ${isPast})"><i class="fas fa-chart-line"></i> إحصائيات</button>
             </div>
         </div>`;
     }
     
-    function generateLeagueCard(match) {
+    function generateLeagueCard(match, isPast) {
         const matchDate = new Date(match.start_time);
-        const isPast = new Date(match.start_time) < new Date();
         const homeScore = match.home_score ?? match.score?.home;
         const awayScore = match.away_score ?? match.score?.away;
         const scoreDisplay = (isPast && homeScore !== undefined && awayScore !== undefined) ? `${homeScore} - ${awayScore}` : "VS";
+        const isFinished = isPast || match.status === "finished";
         
         return `<div class="match-card">
             <div class="match-teams">
@@ -573,6 +745,7 @@
                 <span><i class="fas fa-calendar"></i> ${matchDate.toLocaleDateString("ar-EG")}</span>
                 <span><i class="fas fa-clock"></i> ${matchDate.toLocaleTimeString("ar-EG", { hour:'2-digit', minute:'2-digit' })}</span>
                 <span><i class="fas fa-map-marker-alt"></i> ${match.venue || "TBD"}</span>
+                <button class="stats-btn" onclick="showMatchStats(${match.id}, '${(match.home_team || "?").replace(/'/g, "\\'")}', '${(match.away_team || "?").replace(/'/g, "\\'")}', '${match.start_time}', ${isFinished})"><i class="fas fa-chart-line"></i> إحصائيات</button>
             </div>
         </div>`;
     }
@@ -587,27 +760,35 @@
         }
         
         container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الترتيب...</div>';
-        const standings = await fetchStandings(currentLeague);
         
-        if (standings && standings.length > 0) {
-            let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></tr></thead><tbody>';
-            standings.slice(0, 15).forEach((team, idx) => {
-                html += `<tr>
-                    <td>${idx + 1}</td>
-                    <td style="text-align:right;"><span style="font-size:1rem;">${getFlag(team.team_name)}</span> ${team.team_name || "?"}</td>
-                    <td>${team.played || 0}</td>
-                    <td>${team.wins || 0}</td>
-                    <td>${team.draws || 0}</td>
-                    <td>${team.losses || 0}</td>
-                    <td>${team.goals_for || 0}</td>
-                    <td>${team.goals_against || 0}</td>
-                    <td><strong>${team.points || 0}</strong></td>
-                </tr>`;
-            });
-            html += '</tbody></table></div>';
-            container.innerHTML = html;
-        } else {
-            container.innerHTML = '<div class="error">🏆 جدول الترتيب غير متوفر حالياً</div>';
+        try {
+            const response = await fetch(`${SPORTSCORE_API}/standings/football/${currentLeague}`);
+            if (!response.ok) throw new Error("فشل تحميل الترتيب");
+            const data = await response.json();
+            const standings = data.standings || [];
+            
+            if (standings && standings.length > 0) {
+                let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>نقاط</th></tr></thead><tbody>';
+                standings.slice(0, 15).forEach((team, idx) => {
+                    html += `<tr>
+                        <td>${idx + 1}</td>
+                        <td style="text-align:right;"><span style="font-size:1rem;">${getFlag(team.team_name)}</span> ${team.team_name || "?"}</td>
+                        <td>${team.played || 0}</td>
+                        <td>${team.wins || 0}</td>
+                        <td>${team.draws || 0}</td>
+                        <td>${team.losses || 0}</td>
+                        <td>${team.goals_for || 0}</td>
+                        <td>${team.goals_against || 0}</td>
+                        <td><strong>${team.points || 0}</strong></td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="error">🏆 جدول الترتيب غير متوفر حالياً</div>';
+            }
+        } catch (error) {
+            container.innerHTML = '<div class="error">🏆 حدث خطأ في تحميل جدول الترتيب</div>';
         }
     }
     
@@ -621,29 +802,37 @@
         }
         
         container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الهدافين...</div>';
-        const scorers = await fetchScorers(currentLeague);
         
-        if (scorers && scorers.length > 0) {
-            let html = '<div class="scorers-list">';
-            scorers.slice(0, 15).forEach((scorer, idx) => {
-                const playerName = scorer.player_name || scorer.name || "?";
-                const teamName = scorer.team_name || "?";
-                const goals = scorer.goals || 0;
-                html += `<div class="scorer-card">
-                    <div class="scorer-left">
-                        <div class="scorer-rank">${idx + 1}</div>
-                        <div class="scorer-info">
-                            <div class="scorer-name">${playerName}</div>
-                            <div class="scorer-team">${teamName}</div>
+        try {
+            const response = await fetch(`${SPORTSCORE_API}/top-scorers/football/${currentLeague}?limit=20`);
+            if (!response.ok) throw new Error("فشل تحميل الهدافين");
+            const data = await response.json();
+            const scorers = data.scorers || [];
+            
+            if (scorers && scorers.length > 0) {
+                let html = '<div class="scorers-list">';
+                scorers.slice(0, 15).forEach((scorer, idx) => {
+                    const playerName = scorer.player_name || scorer.name || "?";
+                    const teamName = scorer.team_name || "?";
+                    const goals = scorer.goals || 0;
+                    html += `<div class="scorer-card">
+                        <div class="scorer-left">
+                            <div class="scorer-rank">${idx + 1}</div>
+                            <div class="scorer-info">
+                                <div class="scorer-name">${playerName}</div>
+                                <div class="scorer-team">${teamName}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="scorer-goals">⚽ ${goals}</div>
-                </div>`;
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        } else {
-            container.innerHTML = '<div class="error">🎯 قائمة الهدافين غير متوفرة حالياً</div>';
+                        <div class="scorer-goals">⚽ ${goals}</div>
+                    </div>`;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="error">🎯 قائمة الهدافين غير متوفرة حالياً</div>';
+            }
+        } catch (error) {
+            container.innerHTML = '<div class="error">🎯 حدث خطأ في تحميل قائمة الهدافين</div>';
         }
     }
     
@@ -675,14 +864,14 @@
         document.querySelectorAll(".stat-card").forEach(card => {
             card.addEventListener("click", () => {
                 const type = card.getAttribute("data-type");
-                if (type === "matches" && (currentLeague === "worldcup" ? worldCupMatches.length : true)) {
+                if (type === "matches" && (currentLeague === "worldcup" ? worldCupMatches.length : currentMatchesData.all.length)) {
                     alert("يمكنك عرض جميع المباريات من القائمة المنسدلة أعلاه");
                 } else if (type === "today") {
                     alert("يمكنك عرض مباريات اليوم من التبويب الرئيسي");
                 } else if (type === "teams") {
                     alert("يتم عرض الفرق تلقائياً في المباريات");
                 } else if (type === "groups") {
-                    alert(currentLeague === "worldcup" ? "كأس العالم 2026 يضم 12 مجموعة" : "يتم عرض جدول الترتيب للدوري المختار");
+                    alert(currentLeague === "worldcup" ? "كأس العالم 2026 يضم 48 منتخباً في 12 مجموعة" : "يتم عرض جدول الترتيب للدوري المختار");
                 }
             });
         });
