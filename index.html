@@ -1,339 +1,538 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>عجلة الحظ</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>GoalHub Pro | متابعة كرة القدم المتكاملة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #0A0F1E 0%, #0C1222 100%);
+            color: #F0F3FA;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
+        .app-container { display: flex; min-height: 100vh; }
         
-        .container {
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 280px;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        .sidebar-logo {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            padding: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 500px;
-            width: 100%;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        
-        h1 {
-            margin-bottom: 10px;
-            color: #333;
+        .sidebar-logo i { font-size: 2.5rem; color: #3B82F6; }
+        .sidebar-logo h2 {
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #FFFFFF, #94A3B8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        
-        canvas {
-            border-radius: 50%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin: 20px 0;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.9rem 1rem;
+            margin: 0.3rem 0;
+            border-radius: 16px;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            max-width: 100%;
-            height: auto;
+            transition: all 0.2s;
+            color: #94A3B8;
         }
-        
-        canvas:active {
-            transform: scale(0.98);
+        .nav-item i { width: 24px; font-size: 1.1rem; }
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+            border-right: 3px solid #3B82F6;
         }
-        
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .nav-item:hover:not(.active) {
+            background: rgba(255,255,255,0.05);
             color: white;
+        }
+        
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 1.5rem;
+        }
+        
+        /* ========== HEADER ========== */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .page-title { font-size: 1.5rem; font-weight: 700; }
+        .page-title i { color: #3B82F6; margin-left: 10px; }
+        .live-badge {
+            background: #DC2626;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 0.6; } 100% { opacity: 1; } }
+        
+        /* ========== LEAGUE SELECTOR ========== */
+        .league-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        .league-btn {
+            background: rgba(30, 41, 59, 0.6);
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #CBD5E1;
             cursor: pointer;
-            margin: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: bold;
+            transition: 0.2s;
+        }
+        .league-btn.active {
+            background: #3B82F6;
+            color: white;
+        }
+        .league-btn:hover:not(.active) { background: #1E293B; color: white; }
+        
+        /* ========== CARDS GRID ========== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
         }
         
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        /* Match Card */
+        .match-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem;
+            transition: transform 0.2s;
+        }
+        .match-card:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.3); }
+        .match-league {
+            font-size: 0.7rem;
+            color: #94A3B8;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .match-status {
+            background: #05966930;
+            color: #34D399;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .match-status.live { background: #DC262630; color: #F87171; animation: pulse 1.2s infinite; }
+        .teams-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        .team { text-align: center; flex: 1; }
+        .team-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+        .team-score { font-size: 1.8rem; font-weight: 800; }
+        .vs-circle {
+            width: 35px;
+            height: 35px;
+            background: #1E293B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+        .match-time { text-align: center; font-size: 0.7rem; color: #64748B; margin-top: 0.8rem; }
+        .match-detail-link {
+            margin-top: 1rem;
+            text-align: center;
+            color: #3B82F6;
+            font-size: 0.75rem;
+            cursor: pointer;
         }
         
-        button:active {
-            transform: translateY(0);
+        /* Standings Table */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .standings-table th, .standings-table td {
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .standings-table th { background: rgba(59, 130, 246, 0.2); color: #94A3B8; font-weight: 600; font-size: 0.8rem; }
+        .standings-table tr:hover { background: rgba(255,255,255,0.03); }
+        .team-name-cell { display: flex; align-items: center; gap: 8px; justify-content: center; }
+        
+        /* Top Scorers */
+        .scorers-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .scorer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+        }
+        .scorer-rank { width: 35px; font-weight: 800; color: #3B82F6; }
+        .scorer-name { flex: 2; font-weight: 600; }
+        .scorer-team { flex: 2; font-size: 0.8rem; color: #94A3B8; }
+        .scorer-goals { font-weight: 800; color: #FBBF24; }
+        
+        .loader { text-align: center; padding: 3rem; }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #475569;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1E293B;
         }
         
-        .result {
-            font-size: 1.5em;
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
-            border-radius: 15px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .status {
-            font-size: 0.9em;
-            margin-top: 10px;
-            padding: 8px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            color: #666;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-right: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎡 عجلة الحظ</h1>
-        <canvas id="wheelCanvas" width="400" height="400"></canvas>
-        <button onclick="spinWheel()">🔄 دور العجلة</button>
-        <div class="result" id="result">اضغط على الزر لتبدأ</div>
-        <div class="status" id="status">✅ جاهز</div>
+<div class="app-container">
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-futbol"></i>
+            <h2>GoalHub Pro</h2>
+            <small style="color:#475569">Powered by SportScore</small>
+        </div>
+        <div class="nav-item active" data-page="live">
+            <i class="fas fa-broadcast-tower"></i>
+            <span>المباريات الحية</span>
+        </div>
+        <div class="nav-item" data-page="standings">
+            <i class="fas fa-trophy"></i>
+            <span>ترتيب الدوري</span>
+        </div>
+        <div class="nav-item" data-page="scorers">
+            <i class="fas fa-futbol"></i>
+            <span>الهدافين</span>
+        </div>
+        <div class="nav-item" data-page="schedule">
+            <i class="fas fa-calendar-alt"></i>
+            <span>جدول المباريات</span>
+        </div>
     </div>
+    
+    <div class="main-content">
+        <div class="main-header">
+            <div class="page-title"><i class="fas fa-broadcast-tower"></i> <span id="pageTitle">المباريات الحية</span></div>
+            <div class="live-badge" id="liveIndicator"><i class="fas fa-circle"></i> LIVE</div>
+        </div>
+        
+        <div class="league-selector" id="leagueSelector"></div>
+        <div id="contentContainer"><div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب البيانات...</div></div>
+        <div class="footer">جميع البيانات مقدمة من <a href="https://sportscore.com/" target="_blank" style="color:#3B82F6;">SportScore API</a> | يتم التحديث تلقائياً</div>
+    </div>
+</div>
 
-    <script>
-        // ====================================
-        // إعدادات العجلة
-        // ====================================
-        const segments = [
-            { value: 1, label: "1 🎁", color: "#FF6B6B" },
-            { value: 2, label: "2 🎈", color: "#4ECDC4" },
-            { value: 3, label: "3 🎉", color: "#45B7D1" },
-            { value: 4, label: "4 🎊", color: "#96CEB4" },
-            { value: 5, label: "5 ⭐", color: "#FFEAA7" },
-            { value: 6, label: "6 🎀", color: "#DDA0DD" },
-            { value: 7, label: "7 🏆", color: "#98D8C8" },
-            { value: 8, label: "8 🎵", color: "#F7D794" },
-            { value: 9, label: "9 🌟", color: "#786FA6" },
-            { value: 10, label: "10 💎", color: "#F19066" }
+<script>
+    // إعدادات API
+    const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+    const API_BASE = 'https://sportscore.com/api/v1/football';
+    
+    let currentPage = 'live';
+    let currentLeague = 'premier-league';
+    let allMatches = [];
+    let standingsData = [];
+    let scorersData = [];
+    
+    // الدوريات المدعومة
+    const leagues = {
+        'premier-league': { name: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي', key: 'premier' },
+        'laliga': { name: '🇪🇸 الليجا الإسبانية', key: 'laliga' },
+        'serie-a': { name: '🇮🇹 الدوري الإيطالي', key: 'seriea' },
+        'bundesliga': { name: '🇩🇪 البوندسليجا', key: 'bundesliga' },
+        'ligue-1': { name: '🇫🇷 الدوري الفرنسي', key: 'ligue1' }
+    };
+    
+    async function fetchAPI(endpoint) {
+        try {
+            const response = await fetch(PROXY_URL + encodeURIComponent(`${API_BASE}/${endpoint}`));
+            if (!response.ok) throw new Error('API Error');
+            return await response.json();
+        } catch(e) {
+            console.warn(`API Error: ${endpoint}`, e);
+            return null;
+        }
+    }
+    
+    // جلب المباريات الحية والمباريات اليوم
+    async function fetchMatches() {
+        const today = new Date().toISOString().split('T')[0];
+        const [liveData, fixturesData] = await Promise.all([
+            fetchAPI('fixtures/live'),
+            fetchAPI(`fixtures/date/${today}`)
+        ]);
+        
+        let matches = [];
+        if (liveData?.data) matches.push(...liveData.data);
+        if (fixturesData?.data) matches.push(...fixturesData.data);
+        
+        // إزالة المكررات
+        matches = matches.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+        
+        return matches.map(m => ({
+            id: m.id,
+            homeTeam: m.home_team?.name || 'فريق',
+            awayTeam: m.away_team?.name || 'فريق',
+            homeScore: m.scores?.home_score ?? '',
+            awayScore: m.scores?.away_score ?? '',
+            leagueName: m.league_name || 'دوري',
+            status: m.status,
+            isLive: m.status === 'LIVE' || m.status === 'HT' || m.status === '2H',
+            time: m.starting_at ? new Date(m.starting_at).toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) : '—'
+        }));
+    }
+    
+    // جلب ترتيب الدوري
+    async function fetchStandings(leagueSlug) {
+        const data = await fetchAPI(`standings/${leagueSlug}`);
+        if (data?.data) return data.data;
+        // بيانات تجريبية للترتيب في حال فشل API
+        return generateDemoStandings();
+    }
+    
+    // جلب الهدافين
+    async function fetchTopScorers(leagueSlug) {
+        const data = await fetchAPI(`top-scorers/${leagueSlug}`);
+        if (data?.data) return data.data;
+        return generateDemoScorers();
+    }
+    
+    // بيانات تجريبية للترتيب (احتياطية)
+    function generateDemoStandings() {
+        return [
+            { rank: 1, team: "مانشستر سيتي", played: 28, won: 20, drawn: 5, lost: 3, goalsFor: 62, goalsAgainst: 26, points: 65 },
+            { rank: 2, team: "أرسنال", played: 28, won: 19, drawn: 6, lost: 3, goalsFor: 59, goalsAgainst: 23, points: 63 },
+            { rank: 3, team: "ليفربول", played: 28, won: 18, drawn: 7, lost: 3, goalsFor: 65, goalsAgainst: 29, points: 61 },
+            { rank: 4, team: "أستون فيلا", played: 28, won: 17, drawn: 4, lost: 7, goalsFor: 54, goalsAgainst: 41, points: 55 },
         ];
+    }
+    
+    function generateDemoScorers() {
+        return [
+            { rank: 1, name: "إرلينغ هالاند", team: "مانشستر سيتي", goals: 21 },
+            { rank: 2, name: "محمد صلاح", team: "ليفربول", goals: 19 },
+            { rank: 3, name: "دومينيك سولانكي", team: "بورنموث", goals: 16 },
+            { rank: 4, name: "هاري كين", team: "بايرن ميونخ", goals: 15 },
+        ];
+    }
+    
+    // عرض المباريات
+    function renderMatches(matches) {
+        if (!matches.length) return '<div class="loader">لا توجد مباريات حالياً</div>';
         
-        const segmentCount = segments.length;
-        const segmentAngle = (Math.PI * 2) / segmentCount;
+        return `
+            <div class="cards-grid">
+                ${matches.map(m => `
+                    <div class="match-card">
+                        <div class="match-league">
+                            <span><i class="fas fa-tag"></i> ${m.leagueName}</span>
+                            <span class="match-status ${m.isLive ? 'live' : ''}">${m.isLive ? '🟢 مباشر' : (m.status === 'FT' ? 'انتهت' : 'قادمة')}</span>
+                        </div>
+                        <div class="teams-row">
+                            <div class="team">
+                                <div class="team-name">${m.homeTeam}</div>
+                                <div class="team-score">${m.homeScore || '—'}</div>
+                            </div>
+                            <div class="vs-circle">VS</div>
+                            <div class="team">
+                                <div class="team-name">${m.awayTeam}</div>
+                                <div class="team-score">${m.awayScore || '—'}</div>
+                            </div>
+                        </div>
+                        <div class="match-time"><i class="far fa-clock"></i> ${m.time}</div>
+                        <div class="match-detail-link" onclick="alert('تفاصيل المباراة قريباً - Match ID: ${m.id}')">
+                            <i class="fas fa-chart-line"></i> إحصائيات المباراة
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    // عرض ترتيب الدوري
+    function renderStandings(standings) {
+        if (!standings.length) return '<div class="loader">لا توجد بيانات ترتيب</div>';
         
-        let canvas = document.getElementById('wheelCanvas');
-        let ctx = canvas.getContext('2d');
-        let currentAngle = 0;
-        let spinning = false;
+        return `
+            <table class="standings-table">
+                <thead>
+                    <tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>±</th><th>نقاط</th></tr>
+                </thead>
+                <tbody>
+                    ${standings.map(t => `
+                        <tr>
+                            <td>${t.rank}</td>
+                            <td><div class="team-name-cell"><span>${t.team}</span></div></td>
+                            <td>${t.played}</td>
+                            <td>${t.won}</td>
+                            <td>${t.drawn}</td>
+                            <td>${t.lost}</td>
+                            <td>${t.goalsFor}</td>
+                            <td>${t.goalsAgainst}</td>
+                            <td>${t.goalsFor - t.goalsAgainst}</td>
+                            <td><strong>${t.points}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    
+    // عرض الهدافين
+    function renderScorers(scorers) {
+        if (!scorers.length) return '<div class="loader">لا تبيانات هدافين</div>';
         
-        // ====================================
-        // تهيئة Telegram WebApp
-        // ====================================
-        const tg = window.Telegram.WebApp;
+        return `
+            <div class="scorers-list">
+                ${scorers.map(s => `
+                    <div class="scorer-item">
+                        <div class="scorer-rank">#${s.rank}</div>
+                        <div class="scorer-name"><i class="fas fa-user"></i> ${s.name}</div>
+                        <div class="scorer-team"><i class="fas fa-flag-checkered"></i> ${s.team}</div>
+                        <div class="scorer-goals"><i class="fas fa-futbol"></i> ${s.goals} هدف</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    // عرض جدول المباريات (قادمة)
+    function renderSchedule(matches) {
+        const upcoming = matches.filter(m => !m.isLive && m.status !== 'FT');
+        if (!upcoming.length) return '<div class="loader">لا توجد مباريات قادمة</div>';
+        return renderMatches(upcoming);
+    }
+    
+    // تحديث واجهة المستخدم
+    async function loadPage() {
+        const container = document.getElementById('contentContainer');
+        const titleSpan = document.getElementById('pageTitle');
         
-        // تغيير لون الخلفية ليتناسب مع التطبيق
-        tg.setBackgroundColor("#ffffff");
-        tg.setHeaderColor("bg_color");
+        container.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-pulse"></i> جلب البيانات...</div>';
         
-        // إعلام تلغرام أن التطبيق جاهز
-        tg.ready();
-        
-        // توسيع التطبيق لملء الشاشة
-        tg.expand();
-        
-        // عرض معلومات المستخدم في وحدة التحكم (للتجربة)
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            console.log("👤 مستخدم:", tg.initDataUnsafe.user.first_name);
-            console.log("🆔 ID:", tg.initDataUnsafe.user.id);
-            document.getElementById('status').innerHTML = `✅ مرحباً ${tg.initDataUnsafe.user.first_name}`;
-        } else {
-            document.getElementById('status').innerHTML = `✅ العجلة جاهزة`;
+        try {
+            if (currentPage === 'live') {
+                titleSpan.innerHTML = '<i class="fas fa-broadcast-tower"></i> المباريات الحية';
+                const matches = await fetchMatches();
+                allMatches = matches;
+                container.innerHTML = renderMatches(matches.filter(m => m.isLive).length ? matches.filter(m => m.isLive) : matches.slice(0, 10));
+            }
+            else if (currentPage === 'standings') {
+                titleSpan.innerHTML = '<i class="fas fa-trophy"></i> ترتيب الدوري';
+                const leagueSlug = Object.keys(leagues).find(k => leagues[k].key === currentLeague) || 'premier-league';
+                standingsData = await fetchStandings(leagueSlug);
+                container.innerHTML = renderStandings(standingsData);
+            }
+            else if (currentPage === 'scorers') {
+                titleSpan.innerHTML = '<i class="fas fa-futbol"></i> قائمة الهدافين';
+                const leagueSlug = Object.keys(leagues).find(k => leagues[k].key === currentLeague) || 'premier-league';
+                scorersData = await fetchTopScorers(leagueSlug);
+                container.innerHTML = renderScorers(scorersData);
+            }
+            else if (currentPage === 'schedule') {
+                titleSpan.innerHTML = '<i class="fas fa-calendar-alt"></i> جدول المباريات القادمة';
+                const matches = await fetchMatches();
+                allMatches = matches;
+                container.innerHTML = renderSchedule(matches);
+            }
+        } catch(e) {
+            container.innerHTML = `<div class="loader">⚠️ خطأ في جلب البيانات<br><small>${e.message}</small></div>`;
         }
+    }
+    
+    // إنشاء أزرار اختيار الدوري
+    function renderLeagueSelector() {
+        const container = document.getElementById('leagueSelector');
+        if (!container) return;
         
-        // ====================================
-        // دالة إرسال النتيجة إلى البوت
-        // ====================================
-        function sendResultToBot(result) {
-            // إنشاء البيانات
-            const data = JSON.stringify({
-                value: result,
-                timestamp: Date.now(),
-                user_id: tg.initDataUnsafe?.user?.id || 0
+        container.innerHTML = Object.entries(leagues).map(([slug, league]) => `
+            <button class="league-btn ${currentLeague === league.key ? 'active' : ''}" data-league="${league.key}">
+                ${league.name}
+            </button>
+        `).join('');
+        
+        document.querySelectorAll('.league-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentLeague = btn.dataset.league;
+                document.querySelectorAll('.league-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadPage();
             });
-            
-            console.log("📤 إرسال النتيجة:", data);
-            
-            // عرض حالة الإرسال
-            document.getElementById('status').innerHTML = "📤 جاري الإرسال...";
-            document.getElementById('status').style.background = "#ffeaa7";
-            
-            try {
-                // إرسال البيانات إلى البوت
-                tg.sendData(data);
-                console.log("✅ تم الإرسال بنجاح");
-                document.getElementById('status').innerHTML = "✅ تم الإرسال! سيتم الإغلاق...";
-                document.getElementById('status').style.background = "#d4edda";
-            } catch (error) {
-                console.error("❌ خطأ في الإرسال:", error);
-                document.getElementById('status').innerHTML = "❌ فشل الإرسال! " + error.message;
-                document.getElementById('status').style.background = "#f8d7da";
-                return;
-            }
-            
-            // عرض النتيجة للمستخدم
-            document.getElementById('result').innerHTML = `🎯 النتيجة: ${result} نقطة! 🎉`;
-            
-            // إغلاق التطبيق بعد 1.5 ثانية
-            setTimeout(() => {
-                console.log("🔒 إغلاق التطبيق...");
-                tg.close();
-            }, 1500);
-        }
-        
-        // ====================================
-        // رسم العجلة
-        // ====================================
-        function drawWheel() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = canvas.width / 2;
-            
-            for (let i = 0; i < segmentCount; i++) {
-                const startAngle = currentAngle + i * segmentAngle;
-                const endAngle = startAngle + segmentAngle;
+        });
+    }
+    
+    // التنقل بين الصفحات
+    function initNavigation() {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                currentPage = item.dataset.page;
                 
-                // رسم القطاع
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.fillStyle = segments[i].color;
-                ctx.fill();
-                
-                // رسم الحدود
-                ctx.strokeStyle = "white";
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.lineTo(centerX, centerY);
-                ctx.stroke();
-                
-                // رسم النص
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate(startAngle + segmentAngle / 2);
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#333";
-                ctx.font = "bold 18px 'Segoe UI'";
-                ctx.fillText(segments[i].label, radius * 0.65, 8);
-                ctx.restore();
-            }
-            
-            // رسم الدائرة الداخلية
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 35, 0, Math.PI * 2);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-            ctx.strokeStyle = "#333";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            // رسم النقطة المركزية
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
-            ctx.fillStyle = "#667eea";
-            ctx.fill();
-            
-            // رسم السهم العلوي
-            ctx.fillStyle = "#333";
-            ctx.beginPath();
-            ctx.moveTo(centerX - 12, 5);
-            ctx.lineTo(centerX, -20);
-            ctx.lineTo(centerX + 12, 5);
-            ctx.fill();
-        }
-        
-        // ====================================
-        // الحصول على النتيجة
-        // ====================================
-        function getResult() {
-            // حساب الزاوية الحالية
-            const angle = (Math.PI * 2 - currentAngle) % (Math.PI * 2);
-            const index = Math.floor(angle / segmentAngle) % segmentCount;
-            const result = segments[index].value;
-            console.log("🎯 النتيجة المستخرجة:", result);
-            return result;
-        }
-        
-        // ====================================
-        // دوران العجلة
-        // ====================================
-        function spinWheel() {
-            if (spinning) {
-                console.log("⏳ العجلة تدور بالفعل");
-                return;
-            }
-            
-            spinning = true;
-            console.log("🎡 بدء الدوران...");
-            document.getElementById('status').innerHTML = "🎡 جاري الدوران...";
-            document.getElementById('status').style.background = "#ffeaa7";
-            
-            // عدد الدورات العشوائية
-            const spins = 8 + Math.random() * 8;
-            const finalAngle = currentAngle + (Math.PI * 2 * spins);
-            
-            const startTime = performance.now();
-            const duration = 3000; // 3 ثواني
-            
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(1, elapsed / duration);
-                
-                // منحنى التباطؤ (ease out)
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                currentAngle = currentAngle + (finalAngle - currentAngle) * easeOut;
-                
-                drawWheel();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
+                // إظهار/إخفاء محدد الدوري
+                const leagueSelector = document.getElementById('leagueSelector');
+                if (currentPage === 'standings' || currentPage === 'scorers') {
+                    leagueSelector.style.display = 'flex';
                 } else {
-                    // انتهى الدوران
-                    spinning = false;
-                    const result = getResult();
-                    console.log("🎉 النتيجة النهائية:", result);
-                    document.getElementById('result').innerHTML = `🎯 النتيجة: ${result} نقطة!`;
-                    sendResultToBot(result);
+                    leagueSelector.style.display = 'none';
                 }
-            }
-            
-            requestAnimationFrame(animate);
-        }
-        
-        // ====================================
-        // رسم العجلة لأول مرة
-        // ====================================
-        drawWheel();
-        
-        // إضافة مستمع لأحداث اللمس لتوسيع التطبيق
-        document.body.addEventListener('touchstart', function() {
-            tg.expand();
+                
+                loadPage();
+            });
         });
-        
-        // معالجة زر الرجوع
-        tg.onEvent('backButtonClicked', function() {
-            tg.close();
-        });
-        
-        console.log("🎡 عجلة الحظ جاهزة!");
-    </script>
+    }
+    
+    // بدء التشغيل
+    renderLeagueSelector();
+    initNavigation();
+    loadPage();
+    
+    // تحديث تلقائي كل 60 ثانية للمباريات الحية
+    setInterval(() => {
+        if (currentPage === 'live') loadPage();
+    }, 60000);
+</script>
 </body>
 </html>
