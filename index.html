@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Football BOT | إحصائيات متقدمة - حديثة وتاريخية</title>
+    <title>Football BOT | كرة القدم - نتائج حية وإحصائيات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,7 +15,7 @@
         }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; position: relative; }
         
-        /* ===== عداد الزوار الصغير جداً ===== */
+        /* عداد الزوار */
         .visitor-counter {
             position: absolute;
             top: 10px;
@@ -30,19 +30,8 @@
             backdrop-filter: blur(4px);
             z-index: 10;
         }
-        .visitor-counter i {
-            font-size: 0.55rem;
-            margin-left: 3px;
-            color: #64748b;
-        }
-        @media (max-width: 600px) {
-            .visitor-counter {
-                top: 5px;
-                right: 5px;
-                padding: 2px 6px;
-                font-size: 0.55rem;
-            }
-        }
+        .visitor-counter i { font-size: 0.55rem; margin-left: 3px; color: #64748b; }
+        @media (max-width: 600px) { .visitor-counter { top: 5px; right: 5px; padding: 2px 6px; font-size: 0.55rem; } }
         
         /* Header */
         .header { text-align: center; margin-bottom: 30px; }
@@ -59,7 +48,6 @@
         .logo i { font-size: 2.5rem; color: white; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
         .logo h1 { font-size: 1.8rem; color: white; font-weight: 700; }
-        
         .dev-btn {
             background: rgba(255,255,255,0.2);
             border: none;
@@ -74,11 +62,7 @@
             align-items: center;
             gap: 6px;
         }
-        .dev-btn:hover {
-            background: rgba(255,255,255,0.35);
-            transform: scale(1.02);
-        }
-        
+        .dev-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.02); }
         .tagline { color: #475569; font-size: 0.85rem; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         
         /* Stats Cards */
@@ -103,7 +87,6 @@
         .stat-value { font-size: 1.8rem; font-weight: bold; color: #1e293b; }
         .stat-label { font-size: 0.7rem; color: #64748b; }
         
-        /* League Selector */
         .league-selector {
             background: white;
             border-radius: 60px;
@@ -129,7 +112,6 @@
         .live-badge { background: #10b981; color: white; padding: 5px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: bold; animation: blink 1s infinite; }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
         
-        /* Tabs */
         .tabs {
             display: flex;
             flex-wrap: wrap;
@@ -158,7 +140,6 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Matches Grid */
         .section-title { display: flex; align-items: center; gap: 10px; margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #2563eb; width: fit-content; }
         .matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
         .match-card {
@@ -175,6 +156,13 @@
         .team-name { font-size: 0.8rem; font-weight: 600; text-align: center; }
         .match-score { font-size: 1.2rem; font-weight: 800; background: #f1f5f9; padding: 5px 12px; border-radius: 30px; min-width: 65px; text-align: center; color: #2563eb; }
         .match-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 0.7rem; color: #64748b; }
+        .source-badge {
+            font-size: 0.6rem;
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
         
         .stats-btn {
             background: linear-gradient(135deg, #2563eb, #1e3a5f);
@@ -191,13 +179,11 @@
         }
         .stats-btn:hover { transform: scale(1.05); }
         
-        /* Standing Table */
         .standing-table-wrapper { overflow-x: auto; background: white; border-radius: 20px; padding: 5px; }
         .standing-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         .standing-table th, .standing-table td { padding: 12px 6px; text-align: center; border-bottom: 1px solid #e2e8f0; }
         .standing-table th { background: #f8fafc; color: #2563eb; font-weight: 600; }
         
-        /* Scorers List */
         .scorers-list { display: flex; flex-direction: column; gap: 10px; }
         .scorer-card {
             background: white;
@@ -213,15 +199,10 @@
         .scorer-rank { font-size: 1.2rem; font-weight: bold; color: #2563eb; width: 35px; }
         .scorer-goals { font-size: 1.2rem; font-weight: bold; color: #2563eb; }
         
-        /* Predictions */
         .predictions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         .prediction-card { background: white; border-radius: 20px; padding: 16px; border: 1px solid #e2e8f0; }
         .prediction-match { font-weight: bold; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #2563eb; }
-        .prediction-result { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .prediction-text { color: #2563eb; font-weight: bold; }
-        .prediction-confidence { background: #e0f2fe; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; color: #0284c7; }
         
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -254,7 +235,6 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #2563eb;
         }
-        .modal-header h3 { color: #1e293b; }
         .modal-close {
             background: #fee2e2;
             border: none;
@@ -268,15 +248,7 @@
             align-items: center;
             justify-content: center;
         }
-        
-        /* قائمة المباريات داخل المودال */
-        .matches-modal-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+        .matches-modal-list { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; }
         .modal-match-card {
             background: #f8fafc;
             border-radius: 16px;
@@ -287,88 +259,13 @@
             flex-wrap: wrap;
             gap: 10px;
             border: 1px solid #e2e8f0;
-            transition: all 0.2s;
         }
-        .modal-match-card:hover {
-            border-color: #2563eb;
-            background: white;
-        }
-        .modal-match-teams {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 2;
-        }
-        .modal-team {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .modal-match-teams { display: flex; align-items: center; gap: 12px; flex: 2; }
+        .modal-team { display: flex; align-items: center; gap: 8px; }
         .modal-team-flag { font-size: 1.3rem; }
-        .modal-team-name { font-size: 0.85rem; font-weight: 500; }
-        .modal-vs { font-size: 0.7rem; color: #2563eb; font-weight: bold; }
         .modal-match-details { display: flex; gap: 15px; font-size: 0.7rem; color: #64748b; }
-        @media (max-width: 600px) {
-            .modal-match-card { flex-direction: column; text-align: center; }
-            .modal-match-teams { justify-content: center; }
-            .modal-match-details { justify-content: center; }
-        }
+        @media (max-width: 600px) { .modal-match-card { flex-direction: column; text-align: center; } .modal-match-teams { justify-content: center; } }
         
-        /* Stats Modal Tabs */
-        .stats-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-        .stats-tab-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            border-radius: 30px;
-            transition: all 0.3s;
-        }
-        .stats-tab-btn.active { background: #2563eb; color: white; }
-        .stats-tab-content { display: none; }
-        .stats-tab-content.active { display: block; }
-        
-        .stats-grid-modal {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .team-stats-box {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 15px;
-        }
-        .team-stats-box h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
-        .stat-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.8rem; }
-        .stat-name { color: #64748b; }
-        .stat-value { font-weight: bold; color: #1e293b; }
-        
-        .history-card {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
-        .history-result { color: #2563eb; }
-        
-        .stat-loader { text-align: center; padding: 30px; color: #64748b; }
-        .stat-loader i { font-size: 2rem; animation: spin 1s linear infinite; color: #2563eb; }
-        .loader { text-align: center; padding: 50px; }
-        .loader i { font-size: 2rem; animation: spin 1s linear infinite; color: #2563eb; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .error { background: #fee2e2; color: #dc2626; padding: 20px; border-radius: 16px; text-align: center; }
-        
-        /* Code block for dev modal */
         .code-block {
             background: #1e293b;
             color: #e2e8f0;
@@ -400,7 +297,6 @@
             margin-top: 10px;
         }
         
-        /* ========== ADVERTISING SPACE ========== */
         .promo-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border-radius: 20px;
@@ -411,25 +307,10 @@
             cursor: pointer;
             display: none;
         }
-        .promo-container.visible {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .promo-container:hover {
-            border-color: #2563eb;
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
-            transform: translateY(-2px);
-        }
-        .promo-link {
-            text-decoration: none;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+        .promo-container.visible { display: block; animation: fadeInUp 0.5s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .promo-container:hover { border-color: #2563eb; box-shadow: 0 8px 20px rgba(37,99,235,0.15); transform: translateY(-2px); }
+        .promo-link { text-decoration: none; display: block; width: 100%; height: 100%; }
         .promo-content {
             display: flex;
             align-items: center;
@@ -450,25 +331,9 @@
             font-size: 1.4rem;
             transition: all 0.3s;
         }
-        .promo-container:hover .promo-icon {
-            transform: scale(1.05);
-        }
-        .promo-text {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-        }
-        .promo-title {
-            font-weight: bold;
-            color: #1e293b;
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-        .promo-description {
-            font-size: 0.75rem;
-            color: #64748b;
-            line-height: 1.4;
-        }
+        .promo-text { flex: 2; display: flex; flex-direction: column; }
+        .promo-title { font-weight: bold; color: #1e293b; font-size: 1rem; margin-bottom: 4px; }
+        .promo-description { font-size: 0.75rem; color: #64748b; line-height: 1.4; }
         .promo-button {
             background: linear-gradient(135deg, #2563eb, #1e3a5f);
             color: white;
@@ -481,35 +346,23 @@
             align-items: center;
             gap: 6px;
         }
-        .promo-container:hover .promo-button {
-            transform: translateX(-3px);
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-        }
-        @media (max-width: 600px) {
-            .promo-content { flex-direction: column; text-align: center; padding: 18px; }
-            .promo-text { align-items: center; }
-        }
+        @media (max-width: 600px) { .promo-content { flex-direction: column; text-align: center; padding: 18px; } .promo-text { align-items: center; } }
         
         footer { margin-top: 20px; text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 0.7rem; color: #64748b; }
+        .source-status { background: #e0f2fe; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; display: inline-block; margin-top: 10px; }
         
-        @media (max-width: 768px) {
-            .matches-grid { grid-template-columns: 1fr; }
-            .stats-grid-modal { grid-template-columns: 1fr; }
-            .team-name { font-size: 0.7rem; }
-            .tab-btn { padding: 6px 14px; font-size: 0.75rem; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .league-selector { flex-direction: column; text-align: center; border-radius: 30px; }
-        }
+        @media (max-width: 768px) { .matches-grid { grid-template-columns: 1fr; } .team-name { font-size: 0.7rem; } .tab-btn { padding: 6px 14px; font-size: 0.75rem; } }
+        @media (max-width: 480px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .league-selector { flex-direction: column; text-align: center; border-radius: 30px; } }
+        
+        .loader { text-align: center; padding: 50px; }
+        .loader i { font-size: 2rem; animation: spin 1s linear infinite; color: #2563eb; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .error { background: #fee2e2; color: #dc2626; padding: 20px; border-radius: 16px; text-align: center; }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- ===== عداد الزوار الصغير ===== -->
-    <div class="visitor-counter" id="visitorCounter">
-        <i class="fas fa-eye"></i> <span id="visitorCount">0</span>
-    </div>
+    <div class="visitor-counter" id="visitorCounter"><i class="fas fa-eye"></i> <span id="visitorCount">0</span></div>
     
     <div class="header">
         <div class="logo">
@@ -518,9 +371,9 @@
             <button class="dev-btn" id="devBtn"><i class="fas fa-code"></i> 👨‍💻 للمطورين</button>
         </div>
         <div class="tagline">
-            <span><i class="fas fa-chart-line"></i> إحصائيات حديثة</span>
-            <span><i class="fas fa-history"></i> إحصائيات تاريخية (المواجهات السابقة)</span>
-            <span><i class="fas fa-futbol"></i> أعلام كاملة</span>
+            <span><i class="fas fa-chart-line"></i> نتائج حية</span>
+            <span><i class="fas fa-history"></i> إحصائيات متقدمة</span>
+            <span><i class="fas fa-futbol"></i> كأس العالم 2026</span>
         </div>
     </div>
 
@@ -533,7 +386,7 @@
 
     <div class="league-selector">
         <div class="selector-group"><label><i class="fas fa-globe"></i> البطولة:</label><select id="leagueSelect"><option value="worldcup">🏆 كأس العالم 2026</option><option value="premier-league">🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي</option><option value="laliga">🇪🇸 الدوري الإسباني</option><option value="serie-a">🇮🇹 الدوري الإيطالي</option></select></div>
-        <div class="live-badge"><i class="fas fa-circle"></i> LIVE DATA</div>
+        <div class="live-badge"><i class="fas fa-circle"></i> LIVE</div>
     </div>
 
     <div class="tabs">
@@ -548,34 +401,19 @@
     <div id="scorers" class="tab-content"><div id="scorersContainer"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الهدافين...</div></div></div>
     <div id="predictions" class="tab-content"><div id="predictionsContainer"><div class="loader"><i class="fas fa-robot"></i><br>جاري تحميل التوقعات...</div></div></div>
 
-    <!-- ADVERTISING SPACE -->
     <div class="promo-container" id="promoContainer">
         <a href="#" target="_blank" class="promo-link" id="promoLink">
             <div class="promo-content">
                 <div class="promo-icon"><i class="fas fa-ad" id="promoIcon"></i></div>
                 <div class="promo-text">
                     <span class="promo-title" id="promoTitle">🚀 مساحة إعلانية</span>
-                    <span class="promo-description" id="promoDescription">أضف رابطك هنا ليظهر هذا الإعلان بشكل جميل</span>
+                    <span class="promo-description" id="promoDescription">أضف رابطك هنا</span>
                 </div>
                 <div class="promo-button" id="promoButton"><span>اعرف المزيد</span> <i class="fas fa-arrow-left"></i></div>
             </div>
         </a>
     </div>
 
-    <!-- Modal for Statistics -->
-    <div id="statsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 id="statsModalTitle">إحصائيات المباراة</h3><button class="modal-close" onclick="closeStatsModal()">&times;</button></div>
-            <div class="stats-tabs">
-                <button class="stats-tab-btn active" data-stat-tab="current">📊 إحصائيات المباراة</button>
-                <button class="stats-tab-btn" data-stat-tab="history">📜 تاريخ المواجهات</button>
-            </div>
-            <div id="statsCurrentTab" class="stats-tab-content active"><div id="statsModalBody"><div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل الإحصائيات...</div></div></div>
-            <div id="statsHistoryTab" class="stats-tab-content"><div id="statsHistoryBody"><div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل تاريخ المواجهات...</div></div></div>
-        </div>
-    </div>
-
-    <!-- Modal للقوائم -->
     <div id="listModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h3 id="listModalTitle">العنوان</h3><button class="modal-close" onclick="closeListModal()">&times;</button></div>
@@ -583,21 +421,18 @@
         </div>
     </div>
 
-    <!-- Modal للمطورين -->
     <div id="devModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h3><i class="fas fa-code"></i> 👨‍💻 للمطورين</h3><button class="modal-close" onclick="closeDevModal()">&times;</button></div>
             <div class="info-text"><i class="fas fa-link"></i> <strong>رابط التضمين:</strong><br><code style="background:#e2e8f0;padding:4px 8px;border-radius:8px;">https://sam55na.github.io/non/</code></div>
             <div class="code-block">&lt;iframe src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0"&gt;&lt;/iframe&gt;</div>
             <button class="copy-btn" onclick="copyToClipboard(1)"><i class="fas fa-copy"></i> نسخ الكود</button>
-            <div class="info-text" style="margin-top:15px;"><i class="fas fa-exchange-alt"></i> <strong>التحكم بالبطولة:</strong></div>
-            <div class="code-block">widget.contentWindow.postMessage({type:'CHANGE_LEAGUE', league:'laliga'}, '*');</div>
-            <button class="copy-btn" onclick="copyToClipboard(2)"><i class="fas fa-copy"></i> نسخ الكود المتقدم</button>
         </div>
     </div>
 
     <footer>
-        <i class="fas fa-chart-line"></i> إحصائيات حديثة وتاريخية (آخر 5 مواجهات) • أعلام كاملة
+        <i class="fas fa-chart-line"></i> بيانات حقيقية من SportScore و openfootball
+        <div class="source-status" id="sourceStatus">🟢 مصادر متعددة تعمل</div>
     </footer>
 </div>
 
@@ -611,7 +446,6 @@
     
     // ======================== إعدادات الإعلان ========================
     const AD_CONFIG = { url: "", icon: "fa-ad", title: "🚀 مساحة إعلانية مميزة", description: "تواصل معنا لوضع إعلانك", buttonText: "اعرف المزيد" };
-    
     function initAd() {
         const container = document.getElementById('promoContainer');
         if (AD_CONFIG.url && AD_CONFIG.url !== "" && AD_CONFIG.url !== "#") {
@@ -631,14 +465,11 @@
         "Canada": "🇨🇦", "Bosnia and Herzegovina": "🇧🇦", "USA": "🇺🇸", "Paraguay": "🇵🇾",
         "Brazil": "🇧🇷", "Morocco": "🇲🇦", "Argentina": "🇦🇷", "France": "🇫🇷",
         "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Germany": "🇩🇪", "Spain": "🇪🇸", "Netherlands": "🇳🇱",
-        "Italy": "🇮🇹", "Portugal": "🇵🇹", "Belgium": "🇧🇪", "Croatia": "🇭🇷",
-        "Uruguay": "🇺🇾", "Colombia": "🇨🇴", "Chile": "🇨🇱", "Ecuador": "🇪🇨",
-        "Japan": "🇯🇵", "Australia": "🇦🇺", "Saudi Arabia": "🇸🇦", "Iran": "🇮🇷",
-        "Egypt": "🇪🇬", "Nigeria": "🇳🇬", "Senegal": "🇸🇳", "Tunisia": "🇹🇳",
-        "Turkey": "🇹🇷", "Sweden": "🇸🇪", "Denmark": "🇩🇰", "Poland": "🇵🇱",
+        "Italy": "🇮🇹", "Portugal": "🇵🇹", "Belgium": "🇧🇪", "Croatia": "🇭🇷", "Uruguay": "🇺🇾", "Colombia": "🇨🇴",
+        "Japan": "🇯🇵", "Australia": "🇦🇺", "Saudi Arabia": "🇸🇦", "Iran": "🇮🇷", "Egypt": "🇪🇬", "Nigeria": "🇳🇬",
+        "Senegal": "🇸🇳", "Tunisia": "🇹🇳", "Turkey": "🇹🇷", "Sweden": "🇸🇪", "Denmark": "🇩🇰", "Poland": "🇵🇱",
         "Switzerland": "🇨🇭", "Haiti": "🇭🇹", "New Zealand": "🇳🇿"
     };
-    
     function getFlag(teamName) {
         if (!teamName) return "🏆";
         for (const [key, flag] of Object.entries(flagsDB)) {
@@ -647,53 +478,97 @@
         return "🏆";
     }
     
-    // ======================== API with Fallback ========================
-    const WORLD_CUP_API = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
-    const BACKUP_API = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2022/worldcup.json";
+    // ======================== مصادر البيانات (ثلاثية المستويات) ========================
+    let currentData = { matches: [], standings: [], scorers: [], predictions: [] };
+    let activeSource = "";
     
-    let worldCupData = null;
-    let currentLeague = "worldcup";
-    
-    async function fetchWorldCupData() {
+    // المصدر 1: SportScore API (لا يحتاج مفتاح)
+    async function fetchFromSportScore() {
         try {
-            const response = await fetch(WORLD_CUP_API);
-            if (!response.ok) throw new Error("Primary failed");
-            worldCupData = await response.json();
-            updateStats();
-            return worldCupData;
-        } catch (error) {
-            console.log("Primary API failed, trying backup...");
-            try {
-                const backupResponse = await fetch(BACKUP_API);
-                if (backupResponse.ok) {
-                    worldCupData = await backupResponse.json();
-                    updateStats();
-                    return worldCupData;
-                }
-            } catch (e) {}
-            document.getElementById("matchesContainer").innerHTML = '<div class="error">⚠️ تعذر تحميل البيانات. يرجى تحديث الصفحة.</div>';
+            const response = await fetch('https://api.sportscore.com/v1/matches/football?limit=50');
+            if (!response.ok) throw new Error('SportScore API failed');
+            const data = await response.json();
+            if (data && data.data) {
+                activeSource = "SportScore";
+                document.getElementById('sourceStatus').innerHTML = '🟢 المصدر: SportScore (بيانات حية)';
+                return processSportScoreData(data.data);
+            }
             return null;
-        }
+        } catch(e) { console.log("SportScore error:", e); return null; }
     }
     
-    function updateStats() {
-        if (!worldCupData?.matches) return;
-        const matches = worldCupData.matches;
+    function processSportScoreData(matches) {
+        const now = new Date();
+        const upcoming = matches.filter(m => new Date(m.start_time) > now).slice(0, 20);
+        const past = matches.filter(m => new Date(m.start_time) <= now && m.status === "finished").slice(0, 15);
+        return { upcoming, past, all: matches };
+    }
+    
+    // المصدر 2: openfootball (لكأس العالم)
+    async function fetchFromOpenFootball() {
+        try {
+            const response = await fetch('https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json');
+            if (!response.ok) throw new Error('OpenFootball failed');
+            const data = await response.json();
+            if (data && data.matches) {
+                activeSource = "OpenFootball";
+                document.getElementById('sourceStatus').innerHTML = '🟢 المصدر: openfootball (كأس العالم)';
+                return processOpenFootballData(data);
+            }
+            return null;
+        } catch(e) { console.log("OpenFootball error:", e); return null; }
+    }
+    
+    function processOpenFootballData(data) {
+        const matches = data.matches || [];
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById("totalMatches").innerText = matches.length;
-        document.getElementById("todayMatches").innerText = matches.filter(m => m.date === today).length;
-        const teamsSet = new Set(); matches.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); });
-        document.getElementById("teamsCount").innerText = teamsSet.size;
-        const groupsSet = new Set(); matches.forEach(m => { if (m.group) groupsSet.add(m.group); });
-        document.getElementById("groupsCount").innerText = groupsSet.size || "12";
+        const upcoming = matches.filter(m => m.date >= today).slice(0, 20);
+        const past = matches.filter(m => m.date < today).slice(0, 15);
+        return { upcoming, past, all: matches };
     }
     
-    function renderWorldCupMatches() {
+    // المصدر 3: بيانات مضمّنة (احتياطي أخير)
+    function getEmbeddedData() {
+        activeSource = "مضمنة (احتياطي)";
+        document.getElementById('sourceStatus').innerHTML = '🟡 المصدر: بيانات محلية (وضع الطوارئ)';
+        const worldCupMatches = [
+            { date: "2026-06-11", time: "20:00", team1: "المكسيك", team2: "جنوب أفريقيا", venue: "ملعب مكسيكو سيتي", group: "A", status: "upcoming" },
+            { date: "2026-06-11", time: "23:00", team1: "كوريا الجنوبية", team2: "التشيك", venue: "ملعب غوادالاخارا", group: "A", status: "upcoming" },
+            { date: "2026-06-12", time: "19:00", team1: "كندا", team2: "البوسنة والهرسك", venue: "تورونتو", group: "B", status: "upcoming" },
+            { date: "2026-06-12", time: "22:00", team1: "الولايات المتحدة", team2: "باراغواي", venue: "لوس أنجلوس", group: "D", status: "upcoming" }
+        ];
+        const today = new Date().toISOString().split('T')[0];
+        const upcoming = worldCupMatches.filter(m => m.date >= today);
+        const past = worldCupMatches.filter(m => m.date < today);
+        return { upcoming, past, all: worldCupMatches };
+    }
+    
+    // ======================== جلب البيانات مع نظام الاحتياط ========================
+    async function fetchWithFallback() {
+        // المستوى الأول: SportScore
+        let data = await fetchFromSportScore();
+        if (data && data.upcoming && data.upcoming.length > 0) return data;
+        
+        // المستوى الثاني: openfootball
+        data = await fetchFromOpenFootball();
+        if (data && data.upcoming && data.upcoming.length > 0) return data;
+        
+        // المستوى الثالث: بيانات مضمنة
+        return getEmbeddedData();
+    }
+    
+    // ======================== عرض المباريات ========================
+    let currentMatchesData = { upcoming: [], past: [] };
+    
+    async function renderMatches() {
         const container = document.getElementById("matchesContainer");
-        if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل البيانات</div>'; return; }
-        const matches = worldCupData.matches;
+        container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل المباريات...</div>';
+        
+        currentMatchesData = await fetchWithFallback();
+        
         const today = new Date().toISOString().split('T')[0];
-        const todayMatches = matches.filter(m => m.date === today);
+        const todayMatches = currentMatchesData.upcoming.filter(m => m.date === today);
+        
         let html = '';
         
         if (todayMatches.length > 0) {
@@ -702,69 +577,80 @@
             html += `</div>`;
         }
         
-        const upcomingMatches = matches.filter(m => m.date > today);
-        if (upcomingMatches.length > 0) {
+        const otherMatches = currentMatchesData.upcoming.filter(m => m.date !== today);
+        if (otherMatches.length > 0) {
             html += `<div class="section-title"><i class="fas fa-calendar-week"></i><h3>📅 المباريات القادمة</h3></div><div class="matches-grid">`;
-            upcomingMatches.slice(0, 8).forEach(m => { html += generateMatchCardHTML(m); });
+            otherMatches.slice(0, 12).forEach(m => { html += generateMatchCardHTML(m); });
             html += `</div>`;
         }
         
-        container.innerHTML = html || '<div class="error">📭 لا توجد مباريات</div>';
+        if (currentMatchesData.past && currentMatchesData.past.length > 0) {
+            html += `<div class="section-title"><i class="fas fa-history"></i><h3>📋 النتائج السابقة</h3></div><div class="matches-grid">`;
+            currentMatchesData.past.slice(0, 10).forEach(m => { html += generateMatchCardHTML(m, true); });
+            html += `</div>`;
+        }
+        
+        // تحديث الإحصائيات
+        document.getElementById("totalMatches").innerText = currentMatchesData.all?.length || 0;
+        document.getElementById("todayMatches").innerText = todayMatches.length;
+        
+        const teamsSet = new Set();
+        currentMatchesData.all?.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); });
+        document.getElementById("teamsCount").innerText = teamsSet.size || 48;
+        document.getElementById("groupsCount").innerText = "12";
+        
+        container.innerHTML = html || '<div class="error">📭 لا توجد مباريات لعرضها</div>';
     }
     
-    function generateMatchCardHTML(match) {
+    function generateMatchCardHTML(match, isPast = false) {
+        const homeScore = match.home_score || match.score1;
+        const awayScore = match.away_score || match.score2;
+        const scoreDisplay = (isPast && homeScore && awayScore) ? `${homeScore} - ${awayScore}` : "VS";
+        
         return `<div class="match-card">
             <div class="match-teams">
                 <div class="team"><div class="team-flag">${getFlag(match.team1)}</div><div class="team-name">${match.team1}</div></div>
-                <div class="match-score">VS</div>
+                <div class="match-score">${scoreDisplay}</div>
                 <div class="team"><div class="team-flag">${getFlag(match.team2)}</div><div class="team-name">${match.team2}</div></div>
             </div>
             <div class="match-footer">
                 <span><i class="fas fa-clock"></i> ${match.time || "TBD"}</span>
-                <span><i class="fas fa-map-marker-alt"></i> ${match.ground || "TBD"}</span>
-                <button class="stats-btn" onclick="alert('إحصائيات متقدمة قريباً')"><i class="fas fa-chart-line"></i> إحصائيات</button>
+                <span><i class="fas fa-map-marker-alt"></i> ${match.venue || match.ground || "TBD"}</span>
+                ${isPast ? '<span class="source-badge">✅ منتهية</span>' : `<span class="source-badge">📡 ${activeSource}</span>`}
             </div>
         </div>`;
     }
     
-    function renderWorldCupStandings() {
+    function renderStandings() {
         const container = document.getElementById("standingsContainer");
-        if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل الترتيب</div>'; return; }
-        const groups = {};
-        worldCupData.matches.forEach(match => { if (match.group) { if (!groups[match.group]) groups[match.group] = new Set(); groups[match.group].add(match.team1); groups[match.group].add(match.team2); } });
-        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
-        let rank = 1;
-        for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
-        html += '</tbody></table></div>';
-        container.innerHTML = html;
+        container.innerHTML = `<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>
+            ${['A','B','C','D','E','F','G','H','I','J','K','L'].map((g,idx) => `
+                <tr><td>${idx+1}</td><td><span style="color:#2563eb;">المجموعة ${g}</span></td><td style="text-align:right;">🏆 منتخبات المجموعة ${g}</td><td>0</td><td><strong>0</strong></td></tr>
+            `).join('')}
+        </tbody></table></div>`;
     }
     
-    function renderWorldCupScorers() { document.getElementById("scorersContainer").innerHTML = '<div class="error">🎯 سيتم تحديث قائمة الهدافين فور انطلاق المباريات</div>'; }
+    function renderScorers() {
+        document.getElementById("scorersContainer").innerHTML = '<div class="error">🎯 سيتم تحديث قائمة الهدافين فور انطلاق المباريات</div>';
+    }
     
     function renderPredictions() {
         const container = document.getElementById("predictionsContainer");
         const today = new Date().toISOString().split('T')[0];
-        if (worldCupData?.matches) {
-            const todayMatches = worldCupData.matches.filter(m => m.date === today);
-            if (todayMatches.length > 0) {
-                let html = '<div class="predictions-grid">';
-                todayMatches.forEach(m => { html += `<div class="prediction-card"><div class="prediction-match">🤖 ${m.team1} 🆚 ${m.team2}</div><div class="prediction-result"><span class="prediction-text">تحليل قيد التجهيز</span><span class="prediction-confidence">—</span></div></div>`; });
-                html += '</div>'; container.innerHTML = html;
-            } else { container.innerHTML = '<div class="error">🤖 التوقعات متاحة عند اقتراب موعد المباريات</div>'; }
-        } else { container.innerHTML = '<div class="error">🤖 جاري تحضير التوقعات...</div>'; }
-    }
-    
-    async function loadAllData() {
-        if (currentLeague === "worldcup") {
-            if (!worldCupData) await fetchWorldCupData();
-            renderWorldCupMatches();
-            renderWorldCupStandings();
-            renderWorldCupScorers();
+        const todayMatches = currentMatchesData.upcoming?.filter(m => m.date === today) || [];
+        if (todayMatches.length > 0) {
+            let html = '<div class="predictions-grid">';
+            todayMatches.forEach(m => {
+                html += `<div class="prediction-card"><div class="prediction-match">🤖 ${m.team1} 🆚 ${m.team2}</div><div class="prediction-result"><span class="prediction-text">تحليل قيد التجهيز</span><span class="prediction-confidence">—</span></div></div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<div class="error">🤖 التوقعات متاحة عند اقتراب موعد المباريات</div>';
         }
-        renderPredictions();
     }
     
-    // ======================== Modal Functions ========================
+    // ======================== Functions ========================
     function openListModal(title, items) {
         const modal = document.getElementById('listModal');
         document.getElementById('listModalTitle').innerText = title;
@@ -773,53 +659,43 @@
         items.forEach(item => {
             const div = document.createElement('div');
             div.className = 'modal-match-card';
-            div.innerHTML = `<div class="modal-match-teams"><div class="modal-team"><span class="modal-team-flag">${item.flag1 || "🏆"}</span><span class="modal-team-name">${item.team1}</span></div><span class="modal-vs">🆚</span><div class="modal-team"><span class="modal-team-flag">${item.flag2 || "🏆"}</span><span class="modal-team-name">${item.team2}</span></div></div><div class="modal-match-details">${item.date ? `<span><i class="fas fa-calendar"></i> ${item.date}</span>` : ''}${item.time ? `<span><i class="fas fa-clock"></i> ${item.time}</span>` : ''}${item.venue ? `<span><i class="fas fa-map-marker-alt"></i> ${item.venue}</span>` : ''}</div>`;
+            div.innerHTML = `<div class="modal-match-teams"><div class="modal-team"><span class="modal-team-flag">${item.flag1 || getFlag(item.team1)}</span><span class="modal-team-name">${item.team1}</span></div><span class="modal-vs">🆚</span><div class="modal-team"><span class="modal-team-flag">${item.flag2 || getFlag(item.team2)}</span><span class="modal-team-name">${item.team2}</span></div></div><div class="modal-match-details">${item.date ? `<span><i class="fas fa-calendar"></i> ${item.date}</span>` : ''}${item.time ? `<span><i class="fas fa-clock"></i> ${item.time}</span>` : ''}</div>`;
             body.appendChild(div);
         });
         modal.classList.add('active');
     }
     
     function closeListModal() { document.getElementById('listModal').classList.remove('active'); }
-    function closeStatsModal() { document.getElementById('statsModal').classList.remove('active'); }
-    function openDevModal() { document.getElementById('devModal').classList.add('active'); }
     function closeDevModal() { document.getElementById('devModal').classList.remove('active'); }
-    
+    function openDevModal() { document.getElementById('devModal').classList.add('active'); }
     function copyToClipboard(type) {
-        let text = type === 1 ? '<iframe src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0"></iframe>' : 
-            'widget.contentWindow.postMessage({type:\'CHANGE_LEAGUE\', league:\'laliga\'}, \'*\');';
+        let text = '<iframe src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0"></iframe>';
         navigator.clipboard.writeText(text);
         alert('تم نسخ الكود!');
     }
-    
     document.getElementById('devBtn').addEventListener('click', openDevModal);
     
-    // ======================== Interactive Cards ========================
     function setupInteractiveCards() {
         document.querySelectorAll(".stat-card").forEach(card => {
             card.addEventListener("click", () => {
                 const type = card.getAttribute("data-type");
-                if (type === "matches" && worldCupData?.matches) {
-                    const items = worldCupData.matches.map(m => ({ team1: m.team1, team2: m.team2, flag1: getFlag(m.team1), flag2: getFlag(m.team2), date: m.date, time: m.time || "TBD", venue: m.ground || "TBD" }));
+                if (type === "matches" && currentMatchesData.all) {
+                    const items = currentMatchesData.all.map(m => ({ team1: m.team1, team2: m.team2, flag1: getFlag(m.team1), flag2: getFlag(m.team2), date: m.date, time: m.time || "TBD" }));
                     openListModal("جميع المباريات", items);
-                } else if (type === "today" && worldCupData?.matches) {
+                } else if (type === "today" && currentMatchesData.upcoming) {
                     const today = new Date().toISOString().split('T')[0];
-                    const todayMatches = worldCupData.matches.filter(m => m.date === today);
+                    const todayMatches = currentMatchesData.upcoming.filter(m => m.date === today);
                     if (todayMatches.length === 0) { alert("لا توجد مباريات اليوم"); return; }
-                    const items = todayMatches.map(m => ({ team1: m.team1, team2: m.team2, flag1: getFlag(m.team1), flag2: getFlag(m.team2), date: m.date, time: m.time || "TBD", venue: m.ground || "TBD" }));
-                    openListModal(`مباريات اليوم`, items);
-                } else if (type === "teams" && worldCupData?.matches) {
+                    const items = todayMatches.map(m => ({ team1: m.team1, team2: m.team2, flag1: getFlag(m.team1), flag2: getFlag(m.team2), date: m.date, time: m.time || "TBD" }));
+                    openListModal("مباريات اليوم", items);
+                } else if (type === "teams" && currentMatchesData.all) {
                     const teamsSet = new Set();
-                    worldCupData.matches.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); });
-                    const items = Array.from(teamsSet).map(team => ({ team1: team, team2: "", flag1: getFlag(team), flag2: "", date: "", time: "", venue: "منتخب مشارك" }));
+                    currentMatchesData.all.forEach(m => { teamsSet.add(m.team1); teamsSet.add(m.team2); });
+                    const items = Array.from(teamsSet).map(team => ({ team1: team, team2: "", flag1: getFlag(team), flag2: "", date: "", time: "" }));
                     openListModal("قائمة المنتخبات", items);
-                } else if (type === "groups" && worldCupData?.matches) {
-                    const groupsSet = new Set();
-                    worldCupData.matches.forEach(m => { if (m.group) groupsSet.add(m.group); });
-                    const items = Array.from(groupsSet).map(group => {
-                        const teams = [];
-                        worldCupData.matches.forEach(m => { if (m.group === group) { teams.push(m.team1); teams.push(m.team2); } });
-                        return { team1: `المجموعة ${group}`, team2: "", flag1: "🏆", flag2: "", date: "", time: "", venue: [...new Set(teams)].slice(0,4).join(", ") };
-                    });
+                } else if (type === "groups") {
+                    const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+                    const items = groups.map(g => ({ team1: `المجموعة ${g}`, team2: "", flag1: "🏆", flag2: "", date: "", time: "" }));
                     openListModal("المجموعات", items);
                 }
             });
@@ -836,24 +712,23 @@
                 btn.classList.add("active");
             });
         });
-        document.getElementById("leagueSelect").addEventListener("change", async (e) => { currentLeague = e.target.value; await loadAllData(); });
     }
     
-    // ======================== Embed Widget ========================
+    // ======================== التضمين ========================
     (function() {
         if (window.self !== window.top) {
             const container = document.querySelector('.container');
             if (container) { container.style.padding = '0'; container.style.maxWidth = '100%'; }
-            const footer = document.querySelector('footer');
-            if (footer) footer.style.display = 'none';
         }
     })();
     
     async function init() {
         setupTabsAndEvents();
         setupInteractiveCards();
-        await fetchWorldCupData();
-        await loadAllData();
+        await renderMatches();
+        renderStandings();
+        renderScorers();
+        renderPredictions();
         window.onclick = function(event) { if (event.target.classList.contains('modal')) closeListModal(); };
     }
     init();
