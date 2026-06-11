@@ -274,7 +274,98 @@
         .loader i { font-size: 2rem; animation: spin 1s linear infinite; color: #2563eb; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .error { background: #fee2e2; color: #dc2626; padding: 20px; border-radius: 16px; text-align: center; }
-        footer { margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 0.7rem; color: #64748b; }
+        
+        /* ========== ADVERTISING SPACE - يظهر فقط عند وجود رابط حقيقي ========== */
+        .promo-container {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 20px;
+            margin: 30px 0 20px;
+            padding: 0;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: none; /* مخفي بشكل افتراضي */
+        }
+        .promo-container.visible {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .promo-container:hover {
+            border-color: #2563eb;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+        .promo-link {
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .promo-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px 25px;
+        }
+        .promo-icon {
+            background: linear-gradient(135deg, #2563eb, #1e3a5f);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            transition: all 0.3s;
+        }
+        .promo-container:hover .promo-icon {
+            transform: scale(1.05);
+        }
+        .promo-text {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .promo-title {
+            font-weight: bold;
+            color: #1e293b;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .promo-description {
+            font-size: 0.75rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        .promo-button {
+            background: linear-gradient(135deg, #2563eb, #1e3a5f);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .promo-container:hover .promo-button {
+            transform: translateX(-3px);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        @media (max-width: 600px) {
+            .promo-content { flex-direction: column; text-align: center; padding: 18px; }
+            .promo-text { align-items: center; }
+        }
+        
+        footer { margin-top: 20px; text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 0.7rem; color: #64748b; }
         
         @media (max-width: 768px) {
             .matches-grid { grid-template-columns: 1fr; }
@@ -327,6 +418,33 @@
     <div id="scorers" class="tab-content"><div id="scorersContainer"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الهدافين...</div></div></div>
     <div id="predictions" class="tab-content"><div id="predictionsContainer"><div class="loader"><i class="fas fa-robot"></i><br>جاري تحميل التوقعات...</div></div></div>
 
+    <!-- ========== ADVERTISING SPACE - تظهر فقط عند إضافة رابط ========== -->
+    <!-- 
+        ✏️ للتخصيص: غير القيم التالية في AD_CONFIG
+        - url: الرابط (إذا تركته فارغاً أو "#" لن تظهر المساحة)
+        - icon: أيقونة من Font Awesome
+        - title: العنوان الرئيسي
+        - description: الوصف التفصيلي
+        - buttonText: نص الزر
+    -->
+    <div class="promo-container" id="promoContainer">
+        <a href="#" target="_blank" class="promo-link" id="promoLink">
+            <div class="promo-content">
+                <div class="promo-icon">
+                    <i class="fas fa-ad" id="promoIcon"></i>
+                </div>
+                <div class="promo-text">
+                    <span class="promo-title" id="promoTitle">🚀 مساحة إعلانية</span>
+                    <span class="promo-description" id="promoDescription">أضف رابطك هنا ليظهر هذا الإعلان بشكل جميل وجذاب</span>
+                </div>
+                <div class="promo-button" id="promoButton">
+                    <span>اعرف المزيد</span>
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
     <!-- Modal for Statistics -->
     <div id="statsModal" class="modal">
         <div class="modal-content">
@@ -340,10 +458,54 @@
         </div>
     </div>
 
-    <footer><i class="fas fa-chart-line"></i> إحصائيات حديثة وتاريخية (آخر 5 مواجهات) • أعلام كاملة • بيانات من openfootball و Sportmonks</footer>
+    <footer>
+        <i class="fas fa-chart-line"></i> إحصائيات حديثة وتاريخية (آخر 5 مواجهات) • أعلام كاملة • بيانات من openfootball و Sportmonks
+    </footer>
 </div>
 
 <script>
+    // ======================== CONFIGURATION ========================
+    // ✏️ ====== تخصيص الإعلان - غير هذه القيم كما تريد ======
+    // ملاحظة: إذا تركت url فارغاً أو "#" لن تظهر المساحة الإعلانية نهائياً
+    const AD_CONFIG = {
+        url: "",        // اتركه فارغاً أو "#" لإخفاء الإعلان - ضع رابط حقيقي مثل "https://example.com" لإظهاره
+        icon: "fa-ad",                   // أيقونة (من Font Awesome)
+        title: "🚀 مساحة إعلانية مميزة",  // العنوان
+        description: "تواصل معنا لوضع إعلانك هنا والوصول إلى آلاف المهتمين بكرة القدم", // الوصف
+        buttonText: "اعرف المزيد"        // نص الزر
+    };
+    
+    // ====== التحكم في ظهور الإعلان ======
+    function initAd() {
+        const promoContainer = document.getElementById('promoContainer');
+        const promoLink = document.getElementById('promoLink');
+        const promoIcon = document.getElementById('promoIcon');
+        const promoTitle = document.getElementById('promoTitle');
+        const promoDescription = document.getElementById('promoDescription');
+        const promoButton = document.getElementById('promoButton');
+        
+        // التحقق من وجود رابط حقيقي (ليس فارغاً وليس "#")
+        const hasValidUrl = AD_CONFIG.url && AD_CONFIG.url !== "" && AD_CONFIG.url !== "#";
+        
+        if (hasValidUrl) {
+            // إظهار الإعلان
+            promoContainer.classList.add('visible');
+            if (promoLink) promoLink.href = AD_CONFIG.url;
+            if (promoIcon) promoIcon.className = `fas ${AD_CONFIG.icon}`;
+            if (promoTitle) promoTitle.innerText = AD_CONFIG.title;
+            if (promoDescription) promoDescription.innerText = AD_CONFIG.description;
+            if (promoButton) promoButton.innerHTML = `<span>${AD_CONFIG.buttonText}</span> <i class="fas fa-arrow-left"></i>`;
+        } else {
+            // إخفاء الإعلان
+            promoContainer.classList.remove('visible');
+            promoContainer.style.display = 'none';
+        }
+    }
+    
+    // تطبيق الإعلان عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', initAd);
+    // ============================================================
+    
     // ======================== Flags Database ========================
     const flagsDB = {
         "Mexico": "🇲🇽", "South Africa": "🇿🇦", "South Korea": "🇰🇷", "Czech Republic": "🇨🇿",
@@ -385,7 +547,7 @@
         "goals": "الأهداف"
     };
     
-    // ======================== جلب الإحصائيات الحديثة من Sportmonks ========================
+    // ======================== جلب الإحصائيات الحديثة ========================
     async function fetchMatchStats(homeTeam, awayTeam, matchDate) {
         try {
             const searchUrl = `${SPORTMONKS_API}/fixtures/between/${matchDate}/${matchDate}?api_token=${SPORTMONKS_TOKEN}&include=localTeam,visitorTeam,stats,participants`;
@@ -442,7 +604,6 @@
     // ======================== جلب تاريخ المواجهات ========================
     async function fetchHeadToHead(homeTeam, awayTeam) {
         try {
-            // البحث عن الفرق أولاً
             const teamsUrl = `${SPORTMONKS_API}/teams?api_token=${SPORTMONKS_TOKEN}&search=${encodeURIComponent(homeTeam)}`;
             const teamsResponse = await fetch(teamsUrl);
             if (!teamsResponse.ok) throw new Error("فشل البحث عن الفرق");
@@ -460,7 +621,6 @@
                 return generateHistoricalData(homeTeam, awayTeam);
             }
             
-            // جلب المواجهات السابقة
             const h2hUrl = `${SPORTMONKS_API}/fixtures/head-to-head/${homeTeamId}/${awayTeamId}?api_token=${SPORTMONKS_TOKEN}&include=localTeam,visitorTeam&per_page=5`;
             const h2hResponse = await fetch(h2hUrl);
             if (!h2hResponse.ok) throw new Error("فشل جلب تاريخ المواجهات");
@@ -485,7 +645,6 @@
     }
     
     function generateHistoricalData(homeTeam, awayTeam) {
-        // بيانات تاريخية نموذجية (سيتم استبدالها بـ API حقيقي عند توفر المباريات السابقة)
         const possibleResults = [
             { homeScore: 2, awayScore: 1, winner: "home" },
             { homeScore: 1, awayScore: 1, winner: "draw" },
@@ -504,7 +663,7 @@
         }));
     }
     
-    // ======================== عرض الإحصائيات في النافذة المنبثقة ========================
+    // ======================== عرض الإحصائيات ========================
     let currentHomeTeam = "", currentAwayTeam = "", currentMatchDate = "";
     
     async function showMatchStats(homeTeam, awayTeam, matchDate) {
@@ -519,7 +678,6 @@
         
         await loadStatsData();
         
-        // إعداد تبويبات الإحصائيات
         document.querySelectorAll(".stats-tab-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const tab = btn.getAttribute("data-stat-tab");
@@ -533,7 +691,6 @@
     }
     
     async function loadStatsData() {
-        // تحميل الإحصائيات الحديثة
         document.getElementById("statsModalBody").innerHTML = '<div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل الإحصائيات...</div>';
         const stats = await fetchMatchStats(currentHomeTeam, currentAwayTeam, currentMatchDate);
         
@@ -550,15 +707,12 @@
             document.getElementById("statsModalBody").innerHTML = `<div class="stat-error" style="color:#dc2626;text-align:center;padding:30px;"><i class="fas fa-exclamation-triangle" style="font-size:2rem;"></i><br>لا توجد إحصائيات متاحة لهذه المباراة حالياً.</div>`;
         }
         
-        // تحميل تاريخ المواجهات
         document.getElementById("statsHistoryBody").innerHTML = '<div class="stat-loader"><i class="fas fa-spinner fa-spin"></i> جاري تحميل تاريخ المواجهات...</div>';
         const history = await fetchHeadToHead(currentHomeTeam, currentAwayTeam);
         
         if (history && history.length > 0) {
             let historyHtml = `<div class="history-card"><div class="history-header"><span>التاريخ</span><span>المباراة</span><span>النتيجة</span></div>`;
             history.forEach(m => {
-                const isHomeWin = (m.homeTeam === currentHomeTeam && m.homeScore > m.awayScore) || (m.awayTeam === currentHomeTeam && m.awayScore > m.homeScore);
-                const isDraw = m.homeScore === m.awayScore;
                 historyHtml += `<div class="stat-row"><span>${m.date}</span><span>${m.homeTeam} 🆚 ${m.awayTeam}</span><span class="history-result">${m.homeScore} - ${m.awayScore}</span></div>`;
             });
             historyHtml += `</div>`;
@@ -637,7 +791,7 @@
         if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل الترتيب</div>'; return; }
         const groups = {};
         worldCupData.matches.forEach(match => { if (match.group) { if (!groups[match.group]) groups[match.group] = new Set(); groups[match.group].add(match.team1); groups[match.group].add(match.team2); } });
-        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
+        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th><tr></thead><tbody>';
         let rank = 1;
         for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
         html += '</tbody></table></div>';
@@ -697,6 +851,7 @@
         const modal = document.getElementById("modal");
         const modalTitle = document.getElementById("modalTitle");
         const modalBody = document.getElementById("modalBody");
+        if (!modalTitle || !modalBody) { alert("البيانات: " + items.map(i=>i.name).join(", ")); return; }
         modalTitle.innerText = title; modalBody.innerHTML = "";
         items.forEach(item => { const div = document.createElement("div"); div.className = "modal-item"; div.style.cssText = "background:#f8fafc;padding:12px;border-radius:15px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;margin-bottom:8px;"; div.innerHTML = `<div style="font-size:1.5rem;">${item.flag || "🏆"}</div><div><div style="font-weight:bold;">${item.name}</div><div style="font-size:0.7rem;color:#64748b;">${item.detail || ""}</div></div>`; modalBody.appendChild(div); });
         modal.classList.add("active");
