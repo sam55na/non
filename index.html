@@ -817,7 +817,7 @@
         if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل الترتيب</div>'; return; }
         const groups = {};
         worldCupData.matches.forEach(match => { if (match.group) { if (!groups[match.group]) groups[match.group] = new Set(); groups[match.group].add(match.team1); groups[match.group].add(match.team2); } });
-        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
+        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></td></thead><tbody>';
         let rank = 1;
         for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
         html += '</tbody></table></div>';
@@ -884,6 +884,44 @@
     }
     
     function closeModal() { document.getElementById("modal").classList.remove("active"); }
+    
+    // ======================== Embed Widget - جعل الموقع قابلاً للتضمين ========================
+    (function() {
+        // التحقق إذا كانت الصفحة مضمنة داخل iframe
+        if (window.self !== window.top) {
+            // تطبيق تحسينات للتضمين
+            const container = document.querySelector('.container');
+            if (container) {
+                container.style.padding = '0';
+                container.style.maxWidth = '100%';
+            }
+            // إخفاء الفوتر أثناء التضمين
+            const footer = document.querySelector('footer');
+            if (footer) footer.style.display = 'none';
+            
+            // تنسيقات إضافية للتضمين
+            const style = document.createElement('style');
+            style.textContent = `
+                body { background: transparent !important; padding: 0 !important; }
+                .container { background: transparent !important; }
+                .league-selector, .stats-grid, .promo-container { margin-bottom: 15px !important; }
+                .match-card { box-shadow: none !important; border: 1px solid #e2e8f0; }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // الاستماع لرسائل من الموقع المضيف لتغيير البطولة
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'CHANGE_LEAGUE') {
+                const leagueSelect = document.getElementById('leagueSelect');
+                if (leagueSelect && event.data.league) {
+                    leagueSelect.value = event.data.league;
+                    leagueSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    })();
+    // ============================================================================
     
     async function init() {
         setupTabsAndEvents();
