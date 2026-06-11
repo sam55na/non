@@ -59,7 +59,27 @@
         .logo i { font-size: 2.5rem; color: white; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
         .logo h1 { font-size: 1.8rem; color: white; font-weight: 700; }
-        .logo span { font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 30px; color: white; }
+        
+        /* زر المطورين بدلاً من PRO */
+        .dev-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dev-btn:hover {
+            background: rgba(255,255,255,0.35);
+            transform: scale(1.02);
+        }
+        
         .tagline { color: #475569; font-size: 0.85rem; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         
         /* Stats Cards */
@@ -203,7 +223,7 @@
         .prediction-text { color: #2563eb; font-weight: bold; }
         .prediction-confidence { background: #e0f2fe; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; color: #0284c7; }
         
-        /* Modal */
+        /* Modal - للمطورين */
         .modal {
             display: none;
             position: fixed;
@@ -221,10 +241,10 @@
             background: white;
             border-radius: 30px;
             max-width: 90%;
-            width: 800px;
+            width: 650px;
             max-height: 85%;
             overflow-y: auto;
-            padding: 20px;
+            padding: 25px;
             animation: modalFadeIn 0.3s;
         }
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -232,10 +252,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #2563eb;
         }
+        .modal-header h3 { color: #1e293b; }
         .modal-close {
             background: #fee2e2;
             border: none;
@@ -248,6 +269,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            direction: ltr;
+            text-align: left;
+        }
+        .info-text {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            border-right: 3px solid #2563eb;
+        }
+        .copy-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 10px;
         }
         
         /* Stats Modal Tabs */
@@ -419,7 +470,7 @@
         <div class="logo">
             <i class="fas fa-robot"></i>
             <h1>Football BOT</h1>
-            <span>PRO</span>
+            <button class="dev-btn" id="devBtn"><i class="fas fa-code"></i> 👨‍💻 للمطورين</button>
         </div>
         <div class="tagline">
             <span><i class="fas fa-chart-line"></i> إحصائيات حديثة</span>
@@ -479,8 +530,50 @@
         </div>
     </div>
 
+    <!-- Modal للمطورين -->
+    <div id="devModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-code"></i> 👨‍💻 للمطورين - طريقة التضمين</h3>
+                <button class="modal-close" onclick="closeDevModal()">&times;</button>
+            </div>
+            <div class="info-text">
+                <i class="fas fa-link"></i> <strong>رابط الموقع:</strong><br>
+                <code style="background:#e2e8f0;padding:4px 8px;border-radius:8px;display:inline-block;margin-top:5px;">https://sam55na.github.io/non/</code>
+            </div>
+            <div class="info-text">
+                <i class="fas fa-code"></i> <strong>طريقة التضمين في موقعك (iframe):</strong>
+            </div>
+            <div class="code-block">
+                &lt;iframe src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0" style="border-radius: 20px; overflow: hidden;"&gt;&lt;/iframe&gt;
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard(1)"><i class="fas fa-copy"></i> نسخ الكود</button>
+            
+            <div class="info-text" style="margin-top: 20px;">
+                <i class="fas fa-exchange-alt"></i> <strong>التحكم بالبطولة المعروضة (متقدم):</strong>
+            </div>
+            <div class="code-block">
+                &lt;iframe id="football-widget" src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0"&gt;&lt;/iframe&gt;
+                &lt;script&gt;
+                    const widget = document.getElementById('football-widget');
+                    widget.addEventListener('load', () => {
+                        widget.contentWindow.postMessage({
+                            type: 'CHANGE_LEAGUE',
+                            league: 'laliga' // premier-league, serie-a, bundesliga, worldcup
+                        }, 'https://sam55na.github.io');
+                    });
+                &lt;/script&gt;
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard(2)"><i class="fas fa-copy"></i> نسخ الكود المتقدم</button>
+            
+            <div class="info-text" style="margin-top: 20px;">
+                <i class="fas fa-info-circle"></i> <strong>البطولات المتاحة:</strong> worldcup, premier-league, laliga, serie-a, bundesliga
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <i class="fas fa-chart-line"></i> إحصائيات حديثة وتاريخية (آخر 5 مواجهات) • أعلام كاملة • بيانات من openfootball و Sportmonks
+        <i class="fas fa-chart-line"></i> إحصائيات حديثة وتاريخية (آخر 5 مواجهات) • أعلام كاملة
     </footer>
 </div>
 
@@ -531,6 +624,35 @@
         }
     }
     document.addEventListener('DOMContentLoaded', initAd);
+    
+    // ======================== Modal للمطورين ========================
+    function openDevModal() {
+        document.getElementById('devModal').classList.add('active');
+    }
+    
+    function closeDevModal() {
+        document.getElementById('devModal').classList.remove('active');
+    }
+    
+    function copyToClipboard(type) {
+        let text = '';
+        if (type === 1) {
+            text = '<iframe src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0" style="border-radius: 20px; overflow: hidden;"></iframe>';
+        } else {
+            text = `<iframe id="football-widget" src="https://sam55na.github.io/non/" width="100%" height="850" frameborder="0"></iframe>
+<script>
+    const widget = document.getElementById('football-widget');
+    widget.addEventListener('load', () => {
+        widget.contentWindow.postMessage({ type: 'CHANGE_LEAGUE', league: 'laliga' }, 'https://sam55na.github.io');
+    });
+<\/script>`;
+        }
+        navigator.clipboard.writeText(text);
+        alert('تم نسخ الكود! يمكنك لصقه في موقعك.');
+    }
+    
+    // زر المطورين
+    document.getElementById('devBtn').addEventListener('click', openDevModal);
     
     // ======================== Flags Database ========================
     const flagsDB = {
@@ -727,7 +849,7 @@
             statOrder.forEach(stat => { if (stats.homeStats[stat] !== undefined) html += `<div class="stat-row"><span class="stat-name">${stat}</span><span class="stat-value">${stats.homeStats[stat]}</span></div>`; });
             html += `</div><div class="team-stats-box"><h4>${getFlag(stats.awayTeam || currentAwayTeam)} ${stats.awayTeam || currentAwayTeam}</h4>`;
             statOrder.forEach(stat => { if (stats.awayStats[stat] !== undefined) html += `<div class="stat-row"><span class="stat-name">${stat}</span><span class="stat-value">${stats.awayStats[stat]}</span></div>`; });
-            html += `</div></div><div style="margin-top:15px; font-size:0.7rem; color:#64748b; text-align:center;"><i class="fas fa-check-circle" style="color:#10b981;"></i> إحصائيات من Sportmonks API</div>`;
+            html += `</div></div>`;
             document.getElementById("statsModalBody").innerHTML = html;
         } else {
             document.getElementById("statsModalBody").innerHTML = `<div class="stat-error" style="color:#dc2626;text-align:center;padding:30px;"><i class="fas fa-exclamation-triangle" style="font-size:2rem;"></i><br>لا توجد إحصائيات متاحة لهذه المباراة حالياً.</div>`;
@@ -817,10 +939,10 @@
         if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل الترتيب</div>'; return; }
         const groups = {};
         worldCupData.matches.forEach(match => { if (match.group) { if (!groups[match.group]) groups[match.group] = new Set(); groups[match.group].add(match.team1); groups[match.group].add(match.team2); } });
-        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></td></thead><tbody>';
+        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
         let rank = 1;
         for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
-        html += '</tbody></table></div>';
+        html += '</tbody><table></div>';
         container.innerHTML = html;
     }
     
@@ -887,19 +1009,15 @@
     
     // ======================== Embed Widget - جعل الموقع قابلاً للتضمين ========================
     (function() {
-        // التحقق إذا كانت الصفحة مضمنة داخل iframe
         if (window.self !== window.top) {
-            // تطبيق تحسينات للتضمين
             const container = document.querySelector('.container');
             if (container) {
                 container.style.padding = '0';
                 container.style.maxWidth = '100%';
             }
-            // إخفاء الفوتر أثناء التضمين
             const footer = document.querySelector('footer');
             if (footer) footer.style.display = 'none';
             
-            // تنسيقات إضافية للتضمين
             const style = document.createElement('style');
             style.textContent = `
                 body { background: transparent !important; padding: 0 !important; }
@@ -910,7 +1028,6 @@
             document.head.appendChild(style);
         }
         
-        // الاستماع لرسائل من الموقع المضيف لتغيير البطولة
         window.addEventListener('message', function(event) {
             if (event.data && event.data.type === 'CHANGE_LEAGUE') {
                 const leagueSelect = document.getElementById('leagueSelect');
@@ -927,7 +1044,11 @@
         setupTabsAndEvents();
         await fetchWorldCupData();
         await loadAllData();
-        window.onclick = function(event) { if (event.target === document.getElementById("modal")) closeModal(); if (event.target === document.getElementById("statsModal")) closeStatsModal(); };
+        window.onclick = function(event) { 
+            if (event.target === document.getElementById("modal")) closeModal(); 
+            if (event.target === document.getElementById("statsModal")) closeStatsModal();
+            if (event.target === document.getElementById("devModal")) closeDevModal();
+        };
     }
     init();
 </script>
