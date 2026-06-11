@@ -13,7 +13,36 @@
             min-height: 100vh;
             color: #1e293b;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; position: relative; }
+        
+        /* ===== عداد الزوار الصغير جداً ===== */
+        .visitor-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(37, 99, 235, 0.08);
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #2563eb;
+            direction: ltr;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+        .visitor-counter i {
+            font-size: 0.55rem;
+            margin-left: 3px;
+            color: #64748b;
+        }
+        @media (max-width: 600px) {
+            .visitor-counter {
+                top: 5px;
+                right: 5px;
+                padding: 2px 6px;
+                font-size: 0.55rem;
+            }
+        }
         
         /* Header */
         .header { text-align: center; margin-bottom: 30px; }
@@ -284,7 +313,7 @@
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
             cursor: pointer;
-            display: none; /* مخفي بشكل افتراضي */
+            display: none;
         }
         .promo-container.visible {
             display: block;
@@ -381,6 +410,11 @@
 </head>
 <body>
 <div class="container">
+    <!-- ===== عداد الزوار الصغير جداً ===== -->
+    <div class="visitor-counter" id="visitorCounter">
+        <i class="fas fa-eye"></i> <span id="visitorCount">0</span>
+    </div>
+    
     <div class="header">
         <div class="logo">
             <i class="fas fa-robot"></i>
@@ -418,29 +452,16 @@
     <div id="scorers" class="tab-content"><div id="scorersContainer"><div class="loader"><i class="fas fa-spinner"></i><br>جاري تحميل الهدافين...</div></div></div>
     <div id="predictions" class="tab-content"><div id="predictionsContainer"><div class="loader"><i class="fas fa-robot"></i><br>جاري تحميل التوقعات...</div></div></div>
 
-    <!-- ========== ADVERTISING SPACE - تظهر فقط عند إضافة رابط ========== -->
-    <!-- 
-        ✏️ للتخصيص: غير القيم التالية في AD_CONFIG
-        - url: الرابط (إذا تركته فارغاً أو "#" لن تظهر المساحة)
-        - icon: أيقونة من Font Awesome
-        - title: العنوان الرئيسي
-        - description: الوصف التفصيلي
-        - buttonText: نص الزر
-    -->
+    <!-- ADVERTISING SPACE - تظهر فقط عند إضافة رابط -->
     <div class="promo-container" id="promoContainer">
         <a href="#" target="_blank" class="promo-link" id="promoLink">
             <div class="promo-content">
-                <div class="promo-icon">
-                    <i class="fas fa-ad" id="promoIcon"></i>
-                </div>
+                <div class="promo-icon"><i class="fas fa-ad" id="promoIcon"></i></div>
                 <div class="promo-text">
                     <span class="promo-title" id="promoTitle">🚀 مساحة إعلانية</span>
-                    <span class="promo-description" id="promoDescription">أضف رابطك هنا ليظهر هذا الإعلان بشكل جميل وجذاب</span>
+                    <span class="promo-description" id="promoDescription">أضف رابطك هنا ليظهر هذا الإعلان بشكل جميل</span>
                 </div>
-                <div class="promo-button" id="promoButton">
-                    <span>اعرف المزيد</span>
-                    <i class="fas fa-arrow-left"></i>
-                </div>
+                <div class="promo-button" id="promoButton"><span>اعرف المزيد</span> <i class="fas fa-arrow-left"></i></div>
             </div>
         </a>
     </div>
@@ -464,18 +485,29 @@
 </div>
 
 <script>
-    // ======================== CONFIGURATION ========================
-    // ✏️ ====== تخصيص الإعلان - غير هذه القيم كما تريد ======
-    // ملاحظة: إذا تركت url فارغاً أو "#" لن تظهر المساحة الإعلانية نهائياً
+    // ======================== عداد الزوار الصغير ========================
+    function updateVisitorCounter() {
+        let count = localStorage.getItem('footballBotVisitors');
+        if (count === null) {
+            count = 1;
+        } else {
+            count = parseInt(count) + 1;
+        }
+        localStorage.setItem('footballBotVisitors', count);
+        document.getElementById('visitorCount').innerText = count;
+    }
+    updateVisitorCounter();
+    // ================================================================
+    
+    // ======================== إعدادات الإعلان ========================
     const AD_CONFIG = {
         url: "",        // اتركه فارغاً أو "#" لإخفاء الإعلان - ضع رابط حقيقي مثل "https://example.com" لإظهاره
-        icon: "fa-ad",                   // أيقونة (من Font Awesome)
-        title: "🚀 مساحة إعلانية مميزة",  // العنوان
-        description: "تواصل معنا لوضع إعلانك هنا والوصول إلى آلاف المهتمين بكرة القدم", // الوصف
-        buttonText: "اعرف المزيد"        // نص الزر
+        icon: "fa-ad",
+        title: "🚀 مساحة إعلانية مميزة",
+        description: "تواصل معنا لوضع إعلانك هنا والوصول إلى آلاف المهتمين بكرة القدم",
+        buttonText: "اعرف المزيد"
     };
     
-    // ====== التحكم في ظهور الإعلان ======
     function initAd() {
         const promoContainer = document.getElementById('promoContainer');
         const promoLink = document.getElementById('promoLink');
@@ -484,11 +516,9 @@
         const promoDescription = document.getElementById('promoDescription');
         const promoButton = document.getElementById('promoButton');
         
-        // التحقق من وجود رابط حقيقي (ليس فارغاً وليس "#")
         const hasValidUrl = AD_CONFIG.url && AD_CONFIG.url !== "" && AD_CONFIG.url !== "#";
         
         if (hasValidUrl) {
-            // إظهار الإعلان
             promoContainer.classList.add('visible');
             if (promoLink) promoLink.href = AD_CONFIG.url;
             if (promoIcon) promoIcon.className = `fas ${AD_CONFIG.icon}`;
@@ -496,15 +526,11 @@
             if (promoDescription) promoDescription.innerText = AD_CONFIG.description;
             if (promoButton) promoButton.innerHTML = `<span>${AD_CONFIG.buttonText}</span> <i class="fas fa-arrow-left"></i>`;
         } else {
-            // إخفاء الإعلان
             promoContainer.classList.remove('visible');
             promoContainer.style.display = 'none';
         }
     }
-    
-    // تطبيق الإعلان عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', initAd);
-    // ============================================================
     
     // ======================== Flags Database ========================
     const flagsDB = {
@@ -791,7 +817,7 @@
         if (!worldCupData?.matches) { container.innerHTML = '<div class="error">⚠️ لا يمكن تحميل الترتيب</div>'; return; }
         const groups = {};
         worldCupData.matches.forEach(match => { if (match.group) { if (!groups[match.group]) groups[match.group] = new Set(); groups[match.group].add(match.team1); groups[match.group].add(match.team2); } });
-        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th><tr></thead><tbody>';
+        let html = '<div class="standing-table-wrapper"><table class="standing-table"><thead><tr><th>#</th><th>المجموعة</th><th>المنتخب</th><th>لعب</th><th>نقاط</th></tr></thead><tbody>';
         let rank = 1;
         for (const [group, teams] of Object.entries(groups)) { Array.from(teams).forEach(team => { html += `<tr><td>${rank++}</td><td><span style="color:#2563eb;">${group}</span></td><td style="text-align:right;">${getFlag(team)} ${team}</td><td>0</td><td><strong>0</strong></td></tr>`; }); }
         html += '</tbody></table></div>';
